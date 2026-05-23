@@ -26,6 +26,7 @@ file(GLOB_RECURSE MUDUO_SOURCES CONFIGURE_DEPENDS
   poller.cpp
   socket.cpp
   timestamp.cpp
+  buffer.cpp
 )
 
 add_executable(muduo ${MUDUO_SOURCES})

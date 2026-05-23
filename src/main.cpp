@@ -2,9 +2,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <chrono>
-#include <thread>
-
 #include "acceptor.hpp"
 #include "eventloop.hpp"
 #include "inetaddress.hpp"
