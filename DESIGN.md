@@ -258,7 +258,7 @@ namespace CurrentThread {
 | `fd_` | `const int` | 监听的 fd |
 | `events_` | `int` | 注册的事件位 |
 | `revents_` | `int` | Poller 返回的实际事件 |
-| `index_` | `int` | 在 Poller 中的状态 (kNew/kAdded/kDeleted) |
+| `pollerState_` | `int` | 在 Poller 中的状态 (kNew/kAdded/kDeleted) |
 | `tied_` | `bool` | 是否绑定了 owner |
 | `tie_` | `std::weak_ptr<void>` | 绑定的 owner（通常是 TcpConnection） |
 | `readCallback_` | `ReadEventCallback` | `std::function<void(Timestamp)>` |
@@ -286,7 +286,7 @@ static const int kWriteEvent = EPOLLOUT;
 | `tie` | `void tie(const std::shared_ptr<void>&)` | TcpConnection 调用 |
 | `update` | `void update()` (private) | `loop_->updateChannel(this)` |
 | `remove` | `void remove()` | `loop_->removeChannel(this)` |
-| `index/setIndex` | `int/void` | 给 EPollPoller 用 |
+| `pollerState/setPollerState` | `int/void` | 给 EPollPoller 用 |
 
 **`handleEvent` 实现思路**
 ```cpp
@@ -363,7 +363,7 @@ static const int kDeleted =  2;   // Channel 曾在 epoll，已 DEL，但 channe
 |---|---|
 | 构造 | `epollfd_ = ::epoll_create1(EPOLL_CLOEXEC)` |
 | `poll` | `::epoll_wait(epollfd_, events_.data(), events_.size(), timeoutMs)`；若返回值 == size，下次扩容 ×2 |
-| `updateChannel` | 根据 channel->index() 决定 ADD/MOD：若 kNew/kDeleted 则 ADD，置 kAdded；若 kAdded 则按 isNoneEvent 决定 DEL 或 MOD |
+| `updateChannel` | 根据 channel->pollerState() 决定 ADD/MOD：若 kNew/kDeleted 则 ADD，置 kAdded；若 kAdded 则按 isNoneEvent 决定 DEL 或 MOD |
 | `removeChannel` | channels_.erase(fd)，若状态是 kAdded 还要 epoll_ctl(DEL) |
 | `fillActiveChannels` | 把 epoll_wait 返回的 epoll_event[].data.ptr（指向 Channel）填入 activeChannels，并设置 revents_ |
 | `update` | 内部辅助：`epoll_ctl(epollfd_, op, fd, &event)` |
@@ -470,6 +470,7 @@ if (!isInLoopThread() || callingPendingFunctors_) wakeup();
 | `started/tid/name/numCreated` | getter |
 
 **`start` 实现要点**
+
 - 使用 `std::shared_ptr<std::thread>` 持有；
 - 在新线程内 `tid_ = CurrentThread::tid()` 后通过 `sem_t` 或 `条件变量` 通知主线程
 - 主线程等待 tid 设置完成才返回，否则 `tid()` 可能拿到 0
@@ -931,7 +932,9 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr& conn) {
 
 ### 🟢 M2. 单线程 Reactor（2~3 天）
 **实现**：`Channel`, `Poller`, `EPollPoller`, `EventLoop`, `InetAddress`, `Socket`, `Acceptor`
+
 **验证**：写一个 mini 服务器，accept 后立即关闭。验证 epoll 流程畅通。
+
 ```cpp
 EventLoop loop;
 InetAddress addr(8080);
@@ -946,15 +949,19 @@ loop.loop();
 
 ### 🟢 M3. Buffer + Echo 雏形（1~2 天）
 **实现**：`Buffer`, 简陋版 `TcpConnection`（不完整，但能读能写）
+
 **验证**：手写一个 echo 程序，accept 后直接读写。
 
 ### 🟢 M4. 线程支持（2 天）
 **实现**：`Thread`, `EventLoopThread`, `EventLoopThreadPool`
+
 **验证**：写一个 main，启动 4 个 subLoop，每个 loop 打印自己的 tid。
 
 ### 🟢 M5. 完整 TcpConnection + TcpServer（2~3 天）
 **实现**：`Callbacks.hpp`, 完整 `TcpConnection`, `TcpServer`
+
 **验证**：`examples/echo_server.cpp`
+
 ```cpp
 class EchoServer {
   EventLoop* loop_;

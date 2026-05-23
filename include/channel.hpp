@@ -172,10 +172,10 @@ class Channel : noncopyable {
   void remove();
 
   /**
-   * @brief 获取 Channel 在 Poller 中的状态标记。
+   * @brief 获取 Channel 在 Poller 中的注册状态。
    */
-  inline int index() const {
-    return index_;
+  inline int pollerState() const {
+    return pollerState_;
   }
 
   /**
@@ -200,10 +200,10 @@ class Channel : noncopyable {
   }
 
   /**
-   * @brief 设置 Channel 在 Poller 中的状态标记。
+   * @brief 设置 Channel 在 Poller 中的注册状态。
    */
-  inline void setIndex(int idx) {
-    index_ = idx;
+  inline void setPollerState(int state) {
+    pollerState_ = state;
   }
 
  private:
@@ -228,9 +228,9 @@ class Channel : noncopyable {
   int revents_;
 
   /**
-   * @brief Poller 内部使用的 Channel 状态。
+   * @brief Poller 内部使用的 Channel 注册状态。
    */
-  int index_;
+  int pollerState_;
 
   /**
    * @brief 是否已经绑定 owner。

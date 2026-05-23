@@ -3,8 +3,6 @@
 #include <sys/eventfd.h>
 #include <unistd.h>
 
-#include <cstdlib>
-
 #include "logger.hpp"
 
 // poll timeout in milliseconds

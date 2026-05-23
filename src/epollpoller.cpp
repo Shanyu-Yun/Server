@@ -1,8 +1,9 @@
 #include "epollpoller.hpp"
 
+#include <unistd.h>
+
 #include <cerrno>
 #include <cstdlib>
-#include <unistd.h>
 
 #include "logger.hpp"
 #include "timestamp.hpp"
@@ -11,7 +12,7 @@ namespace {
 constexpr int kNew = -1;     // Channel 未注册
 constexpr int kAdded = 1;    // Channel 已在 epoll
 constexpr int kDeleted = 2;  // Channel 曾在 epoll，已 DEL，但 channels_ 中仍存在
-}
+}  // namespace
 
 // EPOLL_CLOEXEC：在调用exec()时自动关闭epollfd_，防止子进程继承该文件描述符
 // exec()：在当前进程中执行一个新的程序，替换当前进程的映像、数据和堆栈等资源
@@ -49,19 +50,21 @@ Timestamp EpollPoller::poll(int timeoutMs, ChannelList* activeChannels) {
 }
 
 void EpollPoller::updateChannel(Channel* channel) {
-  const int index = channel->index();
+  const int pollerState = channel->pollerState();
   const int fd = channel->fd();
 
-  if (index == kNew || index == kDeleted) {
-    if (index == kNew) {
+  if (pollerState == kNew || pollerState == kDeleted) {
+    if (pollerState == kNew) {
       channels_[fd] = channel;
     }
-    channel->setIndex(kAdded);
+    channel->setPollerState(kAdded);
     update(EPOLL_CTL_ADD, channel);
   } else {
     if (channel->isNoneEvent()) {
+      // 零时将channel从epoll中删除，但不从channels_中删除
+      // 后续如果又有事件发生时再添加回epoll
       update(EPOLL_CTL_DEL, channel);
-      channel->setIndex(kDeleted);
+      channel->setPollerState(kDeleted);
     } else {
       update(EPOLL_CTL_MOD, channel);
     }
@@ -70,13 +73,13 @@ void EpollPoller::updateChannel(Channel* channel) {
 
 void EpollPoller::removeChannel(Channel* channel) {
   const int fd = channel->fd();
-  const int index = channel->index();
+  const int pollerState = channel->pollerState();
   channels_.erase(fd);
 
-  if (index == kAdded) {
+  if (pollerState == kAdded) {
     update(EPOLL_CTL_DEL, channel);
   }
-  channel->setIndex(kNew);
+  channel->setPollerState(kNew);
 }
 
 bool EpollPoller::hasChannel(Channel* channel) const {
