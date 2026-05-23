@@ -1,3 +1,5 @@
+#pragma once
+
 namespace CurrentThread {
 
 extern thread_local int t_cachedTid;

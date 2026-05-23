@@ -15,9 +15,17 @@ target_include_directories(muduo_learn
 )
 
 file(GLOB_RECURSE MUDUO_SOURCES CONFIGURE_DEPENDS
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx
+  acceptor.cpp
+  channel.cpp
+  curthread.cpp
+  epollpoller.cpp
+  eventloop.cpp
+  inetaddress.cpp
+  logger.cpp
+  main.cpp
+  poller.cpp
+  socket.cpp
+  timestamp.cpp
 )
 
 add_executable(muduo ${MUDUO_SOURCES})

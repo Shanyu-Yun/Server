@@ -53,3 +53,24 @@ void Socket::setTcpNoDelay(bool on) {
     LOGERROR("Socket::setTcpNoDelay() error");
   }
 }
+
+void Socket::setReuseAddr(bool on) {
+  int optval = on ? 1 : 0;
+  if (::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
+    LOGERROR("Socket::setReuseAddr() error");
+  }
+}
+
+void Socket::setReusePort(bool on) {
+  int optval = on ? 1 : 0;
+  if (::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval)) < 0) {
+    LOGERROR("Socket::setReusePort() error");
+  }
+}
+
+void Socket::setKeepAlive(bool on) {
+  int optval = on ? 1 : 0;
+  if (::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0) {
+    LOGERROR("Socket::setKeepAlive() error");
+  }
+}
