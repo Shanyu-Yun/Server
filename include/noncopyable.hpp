@@ -1,3 +1,4 @@
+#pragma once
 
 // 继承自noncopyable的类都无法拷贝
 class noncopyable {

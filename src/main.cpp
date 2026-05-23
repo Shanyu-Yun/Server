@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "logger.hpp"
 
 // #include "timestamp.hpp"
