@@ -27,6 +27,7 @@ file(GLOB_RECURSE MUDUO_SOURCES CONFIGURE_DEPENDS
   socket.cpp
   timestamp.cpp
   buffer.cpp
+  tcpconnection.cpp
 )
 
 add_executable(muduo ${MUDUO_SOURCES})
