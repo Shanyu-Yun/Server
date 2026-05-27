@@ -1,6 +1,7 @@
 #include "base/logger.hpp"
 #include "net/eventloop.hpp"
 #include "net/inetaddress.hpp"
+#include "net/tcpconnection.hpp"
 #include "net/tcpserver.hpp"
 
 int main() {
