@@ -1,5 +1,5 @@
 #pragma once
-#include "inetaddress.hpp"
+#include "net/inetaddress.hpp"
 
 /**
  * @brief RAII 封装一个 TCP socket 文件描述符。
@@ -22,20 +22,16 @@ class Socket {
 
   /**
    * @brief 获取底层 socket 文件描述符。
-   * @return 当前 Socket 持有的文件描述符。
    */
   int fd() const;
 
   /**
    * @brief 绑定本地地址。
-   * @param localaddr 要绑定的 IP 和端口。
    */
   void bindAddress(const InetAddress& localaddr);
 
   /**
    * @brief 开始监听连接请求。
-   *
-   * 使用系统默认的最大监听队列长度 SOMAXCONN。
    */
   void listen();
 
@@ -48,33 +44,27 @@ class Socket {
 
   /**
    * @brief 半关闭连接的写端。
-   *
-   * 调用后仍可读取对端数据，但不会再向对端发送数据。
    */
   void shutdownWrite();
 
   /**
    * @brief 开启或关闭 TCP_NODELAY。
-   * @param on true 表示禁用 Nagle 算法，false 表示启用 Nagle 算法。
-   * Nagle 算法会将小数据包合并成更大的包以减少网络拥塞，但可能增加延迟。
+   * @param on true 表示禁用 Nagle 算法。
    */
   void setTcpNoDelay(bool on);
 
   /**
    * @brief 开启或关闭 SO_REUSEADDR。
-   * @param on true 表示允许地址复用，false 表示关闭地址复用。
    */
   void setReuseAddr(bool on);
 
   /**
    * @brief 开启或关闭 SO_REUSEPORT。
-   * @param on true 表示允许端口复用，false 表示关闭端口复用。
    */
   void setReusePort(bool on);
 
   /**
    * @brief 开启或关闭 SO_KEEPALIVE。
-   * @param on true 表示启用 TCP keepalive，false 表示关闭 TCP keepalive。
    */
   void setKeepAlive(bool on);
 

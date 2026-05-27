@@ -1,28 +1,18 @@
-#include "buffer.hpp"
+#include "base/buffer.hpp"
 
 #include <sys/uio.h>
 #include <unistd.h>
 
 #include <algorithm>
-#include <cstddef>
 
-Buffer::Buffer(std::size_t initialSize) : readerIndex_(0), writerIndex_(0), buffer_(initialSize) {}
+Buffer::Buffer(std::size_t initialSize)
+    : readerIndex_(0), writerIndex_(0), buffer_(initialSize) {}
 
-size_t Buffer::readableBytes() const {
-  return writerIndex_ - readerIndex_;
-}
+size_t Buffer::readableBytes()  const { return writerIndex_ - readerIndex_; }
+size_t Buffer::writableBytes()  const { return buffer_.size() - writerIndex_; }
+size_t Buffer::prependableBytes() const { return readerIndex_; }
 
-size_t Buffer::writableBytes() const {
-  return buffer_.size() - writerIndex_;
-}
-
-size_t Buffer::prependableBytes() const {
-  return readerIndex_;
-}
-
-const char* Buffer::peek() const {
-  return buffer_.data() + readerIndex_;
-}
+const char* Buffer::peek() const { return buffer_.data() + readerIndex_; }
 
 void Buffer::retrieve(size_t len) {
   if (len < readableBytes()) {
@@ -44,9 +34,7 @@ std::string Buffer::retrieveAsString(size_t len) {
 }
 
 void Buffer::ensureWritableBytes(size_t len) {
-  if (writableBytes() < len) {
-    makeSpace(len);
-  }
+  if (writableBytes() < len) makeSpace(len);
 }
 
 void Buffer::append(const char* data, size_t len) {
@@ -55,18 +43,12 @@ void Buffer::append(const char* data, size_t len) {
   writerIndex_ += len;
 }
 
-char* Buffer::beginWrite() {
-  return buffer_.data() + writerIndex_;
-}
+char* Buffer::beginWrite() { return buffer_.data() + writerIndex_; }
 
 ssize_t Buffer::writeFd(int fd, int* savedErrno) {
-  // 将 buffer 中的可读数据写入 fd
   ssize_t n = ::write(fd, peek(), readableBytes());
-  if (n >= 0) {
-    retrieve(n);
-  } else {
-    *savedErrno = errno;
-  }
+  if (n >= 0) retrieve(n);
+  else *savedErrno = errno;
   return n;
 }
 
@@ -75,9 +57,9 @@ ssize_t Buffer::readFd(int fd, int* savedErrno) {
   iovec vec[2];
   const size_t writable = writableBytes();
   vec[0].iov_base = beginWrite();
-  vec[0].iov_len = writable;
+  vec[0].iov_len  = writable;
   vec[1].iov_base = extraBuffer;
-  vec[1].iov_len = 65536;
+  vec[1].iov_len  = sizeof(extraBuffer);
   ssize_t n = ::readv(fd, vec, 2);
   if (n > 0) {
     if (static_cast<size_t>(n) <= writable) {
@@ -93,11 +75,9 @@ ssize_t Buffer::readFd(int fd, int* savedErrno) {
 }
 
 void Buffer::makeSpace(size_t len) {
-  //直接扩容
   if (writableBytes() + prependableBytes() < len) {
     buffer_.resize(writerIndex_ + len);
   } else {
-    //搬移数据
     const size_t readable = readableBytes();
     std::copy(buffer_.data() + readerIndex_, buffer_.data() + writerIndex_, buffer_.data());
     readerIndex_ = 0;

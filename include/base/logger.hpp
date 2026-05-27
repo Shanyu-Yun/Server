@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "noncopyable.hpp"
+#include "base/noncopyable.hpp"
 
 /**
  * @brief 日志级别。
@@ -52,8 +52,6 @@ class Logger : noncopyable {
 
 /**
  * @brief 输出 INFO 级别日志。
- * @param fmt std::format 格式串。
- * @param args 格式串参数。
  */
 template <typename... Args>
 void LOGINFO(std::format_string<Args...> fmt, Args&&... args) {
@@ -63,8 +61,6 @@ void LOGINFO(std::format_string<Args...> fmt, Args&&... args) {
 
 /**
  * @brief 输出 WARNING 级别日志。
- * @param fmt std::format 格式串。
- * @param args 格式串参数。
  */
 template <typename... Args>
 void LOGWARNING(std::format_string<Args...> fmt, Args&&... args) {
@@ -74,8 +70,6 @@ void LOGWARNING(std::format_string<Args...> fmt, Args&&... args) {
 
 /**
  * @brief 输出 ERROR 级别日志。
- * @param fmt std::format 格式串。
- * @param args 格式串参数。
  */
 template <typename... Args>
 void LOGERROR(std::format_string<Args...> fmt, Args&&... args) {
@@ -85,8 +79,6 @@ void LOGERROR(std::format_string<Args...> fmt, Args&&... args) {
 
 /**
  * @brief 输出 DEBUG 级别日志。
- * @param fmt std::format 格式串。
- * @param args 格式串参数。
  */
 template <typename... Args>
 void LOGDEBUG(std::format_string<Args...> fmt, Args&&... args) {
