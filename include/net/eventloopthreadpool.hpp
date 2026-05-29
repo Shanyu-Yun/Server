@@ -28,7 +28,9 @@ class EventLoopThreadPool {
    * @brief 设置 IO 线程数量，必须在 start() 前调用。
    * @param numThreads 线程数，0 表示单线程（使用 baseLoop）。
    */
-  void setThreadNum(int numThreads) { numThreads_ = numThreads; }
+  void setThreadNum(int numThreads) {
+    numThreads_ = numThreads;
+  }
 
   /**
    * @brief 启动所有 IO 线程并等待每个线程的 EventLoop 就绪。
@@ -54,17 +56,17 @@ class EventLoopThreadPool {
 
  private:
   /** @brief 主事件循环（TcpServer 所在线程）。 */
-  EventLoop*  baseLoop_;
+  EventLoop* baseLoop_;
   /** @brief 线程名称前缀。 */
   std::string name_;
   /** @brief 是否已调用 start()。 */
-  bool        started_;
+  bool started_;
   /** @brief 要创建的 IO 线程数量。 */
-  int         numThreads_;
+  int numThreads_;
   /** @brief 轮询下标，指向下一个要返回的 loop。 */
-  int         next_;
+  int next_;
   /** @brief 管理所有 IO 线程对象的生命周期。 */
   std::vector<std::unique_ptr<EventLoopThread>> threads_;
   /** @brief 所有 IO 线程的 EventLoop 指针，与 threads_ 一一对应。 */
-  std::vector<EventLoop*>                       loops_;
+  std::vector<EventLoop*> loops_;
 };

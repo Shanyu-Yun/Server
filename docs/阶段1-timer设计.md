@@ -10,7 +10,7 @@
         ┌────────────────────────────────────────────┐
         │              EventLoop                     │
         │  + runAt(when, cb)        ──┐              │
-        │  + runAfter(delay, cb)    ──┼─► 转发给     │
+        │  + runAfter(delay, cb)    ──┼─► 转发给      │
         │  + runEvery(interval, cb) ──┤              │
         │  + cancel(timerId)        ──┘              │
         │                                            │
@@ -18,16 +18,16 @@
         └──────────────────┬─────────────────────────┘
                            │ owns
                            ▼
-        ┌────────────────────────────────────────────┐
-        │              TimerQueue                    │
-        │                                            │
-        │  timerfd ── Channel ── 注册到 Poller       │
-        │                                            │
-        │  std::set<(Timestamp, Timer*)>  timers_    │
+        ┌───────────────────────────────────────────────────┐
+        │              TimerQueue                           │
+        │                                                   │
+        │  timerfd ── Channel ── 注册到 Poller               │
+        │                                                   │
+        │  std::set<(Timestamp, Timer*)>  timers_           │
         │  std::set<(Timer*, sequence)>   activeTimers_     │
         │  std::set<(Timer*, sequence)>   cancelingTimers_  │
-        │  bool                          callingExpiredTimers_ │
-        └────────────────────────────────────────────┘
+        │  bool                       callingExpiredTimers_ │
+        └───────────────────────────────────────────────────┘
 ```
 
 **核心 idiom**：用 `timerfd_create` 把"等到某时刻"转成"等 fd 可读"，从而完美融入现有的 `Channel` + `Poller` 体系，无需让 `Poller::poll` 计算 timeout。

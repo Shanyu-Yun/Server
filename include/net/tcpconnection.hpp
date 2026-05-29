@@ -31,8 +31,8 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
    * @param localAddr 本端地址。
    * @param peerAddr  对端地址。
    */
-  TcpConnection(EventLoop* loop, std::string name, int sockfd,
-                const InetAddress& localAddr, const InetAddress& peerAddr);
+  TcpConnection(EventLoop* loop, std::string name, int sockfd, const InetAddress& localAddr,
+                const InetAddress& peerAddr);
 
   /** @brief 析构 TcpConnection，断言连接已处于 kDisconnected 状态。 */
   ~TcpConnection();
@@ -53,32 +53,51 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
   void shutdown();
 
   /** @brief 设置连接建立/断开时的回调。 */
-  void setConnectionCallback(const ConnectionCallback& cb)       { connectionCallback_   = cb; }
+  void setConnectionCallback(const ConnectionCallback& cb) {
+    connectionCallback_ = cb;
+  }
   /** @brief 设置有数据可读时的回调。 */
-  void setMessageCallback(const MessageCallback& cb)             { messageCallback_      = cb; }
+  void setMessageCallback(const MessageCallback& cb) {
+    messageCallback_ = cb;
+  }
   /** @brief 设置输出缓冲区清空时的回调。 */
-  void setWriteCompleteCallback(const WriteCompleteCallback& cb) { writeCompleteCallback_= cb; }
+  void setWriteCompleteCallback(const WriteCompleteCallback& cb) {
+    writeCompleteCallback_ = cb;
+  }
   /**
    * @brief 设置输出缓冲区首次超过高水位时的回调。
    * @param cb            回调函数。
    * @param highWaterMark 高水位阈值（字节数）。
    */
-  void setHighWaterMarkCallback(const HighWaterMarkCallback& cb,
-                                size_t highWaterMark)            { highWaterMarkCallback_= cb;
-                                                                   highWaterMark_        = highWaterMark; }
+  void setHighWaterMarkCallback(const HighWaterMarkCallback& cb, size_t highWaterMark) {
+    highWaterMarkCallback_ = cb;
+    highWaterMark_ = highWaterMark;
+  }
   /** @brief 设置连接关闭时的回调（内部由 TcpServer 使用）。 */
-  void setCloseCallback(const CloseCallback& cb)                 { closeCallback_        = cb; }
+  void setCloseCallback(const CloseCallback& cb) {
+    closeCallback_ = cb;
+  }
 
   /** @brief 返回所属 IO EventLoop。 */
-  EventLoop*         getLoop()      const { return loop_;      }
+  EventLoop* getLoop() const {
+    return loop_;
+  }
   /** @brief 返回连接名称。 */
-  const std::string& getName()      const { return name_;      }
+  const std::string& getName() const {
+    return name_;
+  }
   /** @brief 返回本端地址。 */
-  const InetAddress& getLocalAddr() const { return localAddr_; }
+  const InetAddress& getLocalAddr() const {
+    return localAddr_;
+  }
   /** @brief 返回对端地址。 */
-  const InetAddress& getPeerAddr()  const { return peerAddr_;  }
+  const InetAddress& getPeerAddr() const {
+    return peerAddr_;
+  }
   /** @brief 返回连接是否处于已建立状态。 */
-  bool               isConnected()  const { return state_ == StateE::kConnected; }
+  bool isConnected() const {
+    return state_ == StateE::kConnected;
+  }
 
   /**
    * @brief 连接建立完成时由 TcpServer 调用，启用读事件并触发 connectionCallback_。
@@ -96,16 +115,16 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
 
  private:
   /** @brief 所属 IO 事件循环。 */
-  EventLoop*          loop_;
+  EventLoop* loop_;
   /** @brief 连接唯一名称。 */
-  const std::string   name_;
+  const std::string name_;
   /** @brief 连接当前状态，原子读写。 */
   std::atomic<StateE> state_;
   /** @brief 是否正在读（channel_ 是否已注册读事件）。 */
-  bool                reading_;
+  bool reading_;
 
   /** @brief 持有 socket fd 的 RAII 对象。 */
-  std::unique_ptr<Socket>  socket_;
+  std::unique_ptr<Socket> socket_;
   /** @brief socket fd 对应的 Channel，负责 IO 事件分发。 */
   std::unique_ptr<Channel> channel_;
 
@@ -114,11 +133,11 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
   /** @brief 对端地址。 */
   const InetAddress peerAddr_;
 
-  ConnectionCallback    connectionCallback_;    ///< 连接建立/断开回调
-  MessageCallback       messageCallback_;       ///< 数据可读回调
-  WriteCompleteCallback writeCompleteCallback_; ///< 写完成回调
-  HighWaterMarkCallback highWaterMarkCallback_; ///< 高水位回调
-  CloseCallback         closeCallback_;         ///< 关闭回调（TcpServer 内部）
+  ConnectionCallback connectionCallback_;        ///< 连接建立/断开回调
+  MessageCallback messageCallback_;              ///< 数据可读回调
+  WriteCompleteCallback writeCompleteCallback_;  ///< 写完成回调
+  HighWaterMarkCallback highWaterMarkCallback_;  ///< 高水位回调
+  CloseCallback closeCallback_;                  ///< 关闭回调（TcpServer 内部）
 
   /** @brief 输出缓冲区高水位阈值（字节）。 */
   size_t highWaterMark_;

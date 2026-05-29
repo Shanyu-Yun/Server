@@ -42,7 +42,9 @@ class Acceptor {
   }
 
   /** @brief 返回是否已开始监听。 */
-  bool listenning() const { return listenning_; }
+  bool listenning() const {
+    return listenning_;
+  }
 
   /**
    * @brief 调用 Socket::listen() 并在 Poller 中启用读事件监听。
@@ -58,11 +60,11 @@ class Acceptor {
   /** @brief 所属事件循环。 */
   EventLoop* loop_;
   /** @brief 监听 socket 的 RAII 封装。 */
-  Socket     acceptSocket_;
+  Socket acceptSocket_;
   /** @brief 监听 socket 对应的 Channel，注册读事件。 */
-  Channel    acceptChannel_;
+  Channel acceptChannel_;
   /** @brief 是否已调用 listen()。 */
-  bool       listenning_;
+  bool listenning_;
   /** @brief 新连接到来时调用的回调，由 TcpServer 设置。 */
   NewConnectionCallback newConnectionCallback_;
 };

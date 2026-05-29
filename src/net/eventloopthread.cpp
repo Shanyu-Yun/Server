@@ -1,7 +1,8 @@
 #include "net/eventloopthread.hpp"
 
 EventLoopThread::EventLoopThread(const ThreadInitCallback& cb, const std::string& name)
-    : loop_(nullptr), exiting_(false),
+    : loop_(nullptr),
+      exiting_(false),
       thread_(std::bind(&EventLoopThread::threadFunc, this), name),
       callback_(cb) {}
 
@@ -18,7 +19,8 @@ EventLoop* EventLoopThread::startLoop() {
   EventLoop* loop = nullptr;
   {
     std::unique_lock<std::mutex> lock(mutex_);
-    while (loop_ == nullptr) condVar_.wait(lock);
+    while (loop_ == nullptr)
+      condVar_.wait(lock);
     loop = loop_;
   }
   return loop;
@@ -26,7 +28,8 @@ EventLoop* EventLoopThread::startLoop() {
 
 void EventLoopThread::threadFunc() {
   EventLoop loop;
-  if (callback_) callback_(&loop);
+  if (callback_)
+    callback_(&loop);
   {
     std::lock_guard<std::mutex> lock(mutex_);
     loop_ = &loop;

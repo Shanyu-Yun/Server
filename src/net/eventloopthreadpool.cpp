@@ -19,12 +19,14 @@ EventLoop* EventLoopThreadPool::getNextLoop() {
   EventLoop* loop = baseLoop_;
   if (!loops_.empty()) {
     loop = loops_[next_];
-    if (++next_ >= static_cast<int>(loops_.size())) next_ = 0;
+    if (++next_ >= static_cast<int>(loops_.size()))
+      next_ = 0;
   }
   return loop;
 }
 
 std::vector<EventLoop*> EventLoopThreadPool::getAllLoops() {
-  if (loops_.empty()) return {baseLoop_};
+  if (loops_.empty())
+    return {baseLoop_};
   return loops_;
 }

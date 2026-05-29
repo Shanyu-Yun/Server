@@ -9,10 +9,10 @@
 #include "base/timestamp.hpp"
 
 namespace {
-constexpr int kNew     = -1;
-constexpr int kAdded   =  1;
-constexpr int kDeleted =  2;
-}
+constexpr int kNew = -1;
+constexpr int kAdded = 1;
+constexpr int kDeleted = 2;
+}  // namespace
 
 EpollPoller::EpollPoller(EventLoop* loop)
     : Poller(loop), epollfd_(::epoll_create1(EPOLL_CLOEXEC)), events_(kInitEventListSize) {
@@ -22,11 +22,13 @@ EpollPoller::EpollPoller(EventLoop* loop)
   }
 }
 
-EpollPoller::~EpollPoller() { ::close(epollfd_); }
+EpollPoller::~EpollPoller() {
+  ::close(epollfd_);
+}
 
 Timestamp EpollPoller::poll(int timeoutMs, ChannelList* activeChannels) {
-  int numEvents = ::epoll_wait(epollfd_, events_.data(),
-                               static_cast<int>(events_.size()), timeoutMs);
+  int numEvents =
+      ::epoll_wait(epollfd_, events_.data(), static_cast<int>(events_.size()), timeoutMs);
   Timestamp now(Timestamp::now());
   if (numEvents > 0) {
     fillActiveChannels(numEvents, activeChannels);
@@ -35,17 +37,19 @@ Timestamp EpollPoller::poll(int timeoutMs, ChannelList* activeChannels) {
   } else if (numEvents == 0) {
     LOGINFO("EpollPoller::poll() timeout");
   } else {
-    if (errno != EINTR) LOGERROR("EpollPoller::poll() error: {:d}", errno);
+    if (errno != EINTR)
+      LOGERROR("EpollPoller::poll() error: {:d}", errno);
   }
   return now;
 }
 
 void EpollPoller::updateChannel(Channel* channel) {
   const int pollerState = channel->pollerState();
-  const int fd          = channel->fd();
+  const int fd = channel->fd();
 
   if (pollerState == kNew || pollerState == kDeleted) {
-    if (pollerState == kNew) channels_[fd] = channel;
+    if (pollerState == kNew)
+      channels_[fd] = channel;
     channel->setPollerState(kAdded);
     update(EPOLL_CTL_ADD, channel);
   } else {
@@ -59,10 +63,11 @@ void EpollPoller::updateChannel(Channel* channel) {
 }
 
 void EpollPoller::removeChannel(Channel* channel) {
-  const int fd          = channel->fd();
+  const int fd = channel->fd();
   const int pollerState = channel->pollerState();
   channels_.erase(fd);
-  if (pollerState == kAdded) update(EPOLL_CTL_DEL, channel);
+  if (pollerState == kAdded)
+    update(EPOLL_CTL_DEL, channel);
   channel->setPollerState(kNew);
 }
 
@@ -81,11 +86,12 @@ void EpollPoller::fillActiveChannels(int numEvents, ChannelList* activeChannels)
 
 void EpollPoller::update(int operation, Channel* channel) {
   epoll_event event{};
-  event.events   = channel->events();
+  event.events = channel->events();
   event.data.ptr = channel;
-  const int fd   = channel->fd();
+  const int fd = channel->fd();
   if (::epoll_ctl(epollfd_, operation, fd, &event) < 0) {
     LOGERROR("EpollPoller::update() epoll_ctl op={:d} fd={:d} err={:d}", operation, fd, errno);
-    if (operation != EPOLL_CTL_DEL) abort();
+    if (operation != EPOLL_CTL_DEL)
+      abort();
   }
 }

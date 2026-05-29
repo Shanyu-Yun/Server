@@ -47,15 +47,15 @@ class EventLoopThread {
   void threadFunc();
 
   /** @brief 后台线程中创建的 EventLoop，由 threadFunc 填充。 */
-  EventLoop*              loop_;
+  EventLoop* loop_;
   /** @brief 析构时是否已请求退出。 */
-  bool                    exiting_;
+  bool exiting_;
   /** @brief 后台线程的 RAII 封装。 */
-  Thread                  thread_;
+  Thread thread_;
   /** @brief 保护 loop_ 可见性的互斥锁。 */
-  std::mutex              mutex_;
+  std::mutex mutex_;
   /** @brief startLoop 等待 loop_ 就绪的条件变量。 */
   std::condition_variable condVar_;
   /** @brief loop 运行前的初始化回调。 */
-  ThreadInitCallback      callback_;
+  ThreadInitCallback callback_;
 };

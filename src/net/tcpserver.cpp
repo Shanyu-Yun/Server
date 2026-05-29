@@ -9,7 +9,7 @@ namespace {
 
 InetAddress getLocalAddr(int sockfd) {
   sockaddr_in localAddr{};
-  socklen_t   addrLen = sizeof(localAddr);
+  socklen_t addrLen = sizeof(localAddr);
   if (::getsockname(sockfd, reinterpret_cast<sockaddr*>(&localAddr), &addrLen) < 0) {
     LOGERROR("TcpServer: getsockname error for fd {}", sockfd);
     return InetAddress();
@@ -19,12 +19,14 @@ InetAddress getLocalAddr(int sockfd) {
 
 }  // namespace
 
-TcpServer::TcpServer(EventLoop* loop, const InetAddress listenAddr, std::string name,
-                     Option option)
-    : loop_(loop), name_(std::move(name)), ipPort_(listenAddr.toIpPort()),
+TcpServer::TcpServer(EventLoop* loop, const InetAddress listenAddr, std::string name, Option option)
+    : loop_(loop),
+      name_(std::move(name)),
+      ipPort_(listenAddr.toIpPort()),
       acceptor_(std::make_unique<Acceptor>(loop, listenAddr, option == kReusePort)),
       threadPool_(std::make_shared<EventLoopThreadPool>(loop, name_)),
-      started_(0), nextConnId_(1) {
+      started_(0),
+      nextConnId_(1) {
   acceptor_->setNewConnectionCallback(
       [this](int sockfd, const InetAddress& peerAddr) { newConnection(sockfd, peerAddr); });
 }
@@ -46,9 +48,9 @@ void TcpServer::start() {
 }
 
 void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
-  EventLoop*        ioLoop   = threadPool_->getNextLoop();
+  EventLoop* ioLoop = threadPool_->getNextLoop();
   const InetAddress localAddr = getLocalAddr(sockfd);
-  const std::string connName  = name_ + "#" + ipPort_ + "#" + std::to_string(nextConnId_++);
+  const std::string connName = name_ + "#" + ipPort_ + "#" + std::to_string(nextConnId_++);
 
   LOGINFO("TcpServer [{}] new connection [{}] from {}", name_, connName, peerAddr.toIpPort());
 

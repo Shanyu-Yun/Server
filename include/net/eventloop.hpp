@@ -101,12 +101,12 @@ class EventLoop {
   /** @brief 创建该 EventLoop 的线程 ID，用于线程安全断言。 */
   const pid_t threadId_;
   /** @brief 上一次 Poller::poll 返回的时间戳。 */
-  Timestamp   pollReturnTime_;
+  Timestamp pollReturnTime_;
 
   /** @brief 底层 IO 多路复用器。 */
-  std::unique_ptr<Poller>  poller_;
+  std::unique_ptr<Poller> poller_;
   /** @brief 本轮 poll 返回的活跃 Channel 列表。 */
-  Poller::ChannelList      activeChannels_;
+  Poller::ChannelList activeChannels_;
 
   /** @brief 用于跨线程唤醒的 eventfd 文件描述符。 */
   int wakeupFd_;
@@ -114,7 +114,7 @@ class EventLoop {
   std::unique_ptr<Channel> wakeupChannel_;
 
   /** @brief 保护 pendingFunctors_ 的互斥锁。 */
-  std::mutex           mutex_;
+  std::mutex mutex_;
   /** @brief 跨线程投递的待执行任务队列。 */
   std::vector<Functor> pendingFunctors_;
 };

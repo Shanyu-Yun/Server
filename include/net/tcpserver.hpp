@@ -9,6 +9,7 @@
 #include "net/eventloop.hpp"
 #include "net/eventloopthreadpool.hpp"
 #include "net/inetaddress.hpp"
+#include "net/tcpconnection.hpp"  // IWYU pragma: keep
 
 /**
  * @brief 监听端口复用选项。

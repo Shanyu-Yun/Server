@@ -4,8 +4,12 @@
 #include "base/logger.hpp"
 
 Thread::Thread(ThreadFunc func, const std::string& name)
-    : started_(false), joined_(false), thread_(nullptr),
-      tid_(0), func_(std::move(func)), name_(name) {
+    : started_(false),
+      joined_(false),
+      thread_(nullptr),
+      tid_(0),
+      func_(std::move(func)),
+      name_(name) {
   numCreated_.fetch_add(1);
 }
 
