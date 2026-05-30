@@ -33,6 +33,8 @@ TcpServer::TcpServer(EventLoop* loop, const InetAddress listenAddr, std::string 
 
 TcpServer::~TcpServer() {
   for (auto& [name, conn] : connections_) {
+    // 这里其实直接使用conn->connectDestroyed()也行
+    // 只是风格选择，让析构路径按照map先放手，再调用connectDestroyed这个流程
     TcpConnectionPtr localConn(conn);
     conn.reset();
     localConn->getLoop()->runInLoop([localConn] { localConn->connectDestroyed(); });
