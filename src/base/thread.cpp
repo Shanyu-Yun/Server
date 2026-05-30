@@ -3,6 +3,8 @@
 #include "base/currentthread.hpp"
 #include "base/logger.hpp"
 
+namespace tinynet {
+
 Thread::Thread(ThreadFunc func, const std::string& name)
     : started_(false),
       joined_(false),
@@ -35,3 +37,5 @@ void Thread::join() {
     LOGERROR("Thread::join() called on thread that is not started or already joined");
   }
 }
+
+}  // namespace tinynet

@@ -6,6 +6,8 @@
 #include "net/eventloop.hpp"
 #include "net/socket.hpp"
 
+namespace tinynet {
+
 /**
  * @brief 负责监听端口并接受新连接。
  *
@@ -68,3 +70,5 @@ class Acceptor {
   /** @brief 新连接到来时调用的回调，由 TcpServer 设置。 */
   NewConnectionCallback newConnectionCallback_;
 };
+
+}  // namespace tinynet

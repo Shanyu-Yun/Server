@@ -4,6 +4,8 @@
 
 #include "base/timestamp.hpp"
 
+namespace tinynet {
+
 Logger& Logger::instance() {
   static Logger instance;
   return instance;
@@ -32,3 +34,5 @@ void Logger::log(std::string msg) {
   }
   std::cout << Timestamp::now().toString() << ":" << msg << std::endl;
 }
+
+}  // namespace tinynet

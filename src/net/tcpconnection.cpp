@@ -8,6 +8,8 @@
 #include "base/timestamp.hpp"
 #include "net/socket.hpp"
 
+namespace tinynet {
+
 TcpConnection::TcpConnection(EventLoop* loop, std::string name, int sockfd,
                              const InetAddress& localAddr, const InetAddress& peerAddr)
     : loop_(loop),
@@ -161,3 +163,5 @@ void TcpConnection::shutdownInLoop() {
   if (state_ == StateE::kDisconnecting && !channel_->isWriting())
     socket_->shutdownWrite();
 }
+
+}  // namespace tinynet

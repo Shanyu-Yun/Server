@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(muduo_learn LANGUAGES CXX)
+project(tinynet LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ── 公共库 ──────────────────────────────────────────────────────────────
-add_library(muduo_core STATIC
+add_library(tinynet STATIC
   src/base/timestamp.cpp
   src/base/logger.cpp
   src/base/buffer.cpp
@@ -27,12 +27,12 @@ add_library(muduo_core STATIC
   src/net/eventloopthreadpool.cpp
 )
 
-target_include_directories(muduo_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(tinynet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # ── 主程序 ──────────────────────────────────────────────────────────────
-add_executable(muduo src/main.cpp)
-target_link_libraries(muduo PRIVATE muduo_core)
+add_executable(tinynet_demo src/main.cpp)
+target_link_libraries(tinynet_demo PRIVATE tinynet)
 
 # ── 基准测试 ─────────────────────────────────────────────────────────────
 add_executable(benchmark benchmark/benchmark.cpp)
-target_link_libraries(benchmark PRIVATE muduo_core)
+target_link_libraries(benchmark PRIVATE tinynet)

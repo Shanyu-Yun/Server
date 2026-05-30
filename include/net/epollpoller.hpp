@@ -6,6 +6,8 @@
 
 #include "net/poller.hpp"
 
+namespace tinynet {
+
 /**
  * @brief 基于 Linux epoll 的 Poller 实现。
  *
@@ -73,3 +75,5 @@ class EpollPoller : public Poller {
   /** @brief epoll_wait 结果缓冲区，按需自动扩容。 */
   std::vector<epoll_event> events_;
 };
+
+}  // namespace tinynet

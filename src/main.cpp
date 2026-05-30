@@ -3,6 +3,8 @@
 #include "net/inetaddress.hpp"
 #include "net/tcpserver.hpp"
 
+using namespace tinynet;
+
 int main() {
   EventLoop loop;
   InetAddress listenAddr(8888, "127.0.0.1");

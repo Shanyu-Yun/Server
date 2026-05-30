@@ -9,6 +9,8 @@
 #include "base/noncopyable.hpp"
 #include "base/timestamp.hpp"
 
+namespace tinynet {
+
 class EventLoop;
 
 /**
@@ -173,3 +175,5 @@ class Channel : noncopyable {
   /** @brief 在持有 tie_ 的前提下真正执行事件分发。 */
   void handleEventWithGuard(Timestamp receiveTime);
 };
+
+}  // namespace tinynet

@@ -3,6 +3,8 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
+namespace tinynet {
+
 namespace CurrentThread {
 
 thread_local int t_cachedTid = 0;
@@ -12,3 +14,5 @@ void cacheTid() {
 }
 
 }  // namespace CurrentThread
+
+}  // namespace tinynet

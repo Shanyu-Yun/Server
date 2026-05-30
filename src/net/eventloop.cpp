@@ -5,6 +5,8 @@
 
 #include "base/logger.hpp"
 
+namespace tinynet {
+
 namespace {
 constexpr int kPollTimeMs = 10000;
 }
@@ -112,3 +114,5 @@ void EventLoop::doPendingFunctors() {
     functor();
   callingPendingFunctors_ = false;
 }
+
+}  // namespace tinynet

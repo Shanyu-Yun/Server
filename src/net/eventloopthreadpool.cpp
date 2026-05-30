@@ -1,5 +1,7 @@
 #include "net/eventloopthreadpool.hpp"
 
+namespace tinynet {
+
 EventLoopThreadPool::EventLoopThreadPool(EventLoop* baseLoop, const std::string& name)
     : baseLoop_(baseLoop), name_(name), started_(false), numThreads_(0), next_(0) {}
 
@@ -30,3 +32,5 @@ std::vector<EventLoop*> EventLoopThreadPool::getAllLoops() {
     return {baseLoop_};
   return loops_;
 }
+
+}  // namespace tinynet

@@ -1,5 +1,7 @@
 #include "net/eventloopthread.hpp"
 
+namespace tinynet {
+
 EventLoopThread::EventLoopThread(const ThreadInitCallback& cb, const std::string& name)
     : loop_(nullptr),
       exiting_(false),
@@ -37,3 +39,5 @@ void EventLoopThread::threadFunc() {
   }
   loop.loop();
 }
+
+}  // namespace tinynet

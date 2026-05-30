@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+namespace tinynet {
+
 Buffer::Buffer(std::size_t initialSize) : readerIndex_(0), writerIndex_(0), buffer_(initialSize) {}
 
 size_t Buffer::readableBytes() const {
@@ -96,3 +98,5 @@ void Buffer::makeSpace(size_t len) {
     writerIndex_ = readable;
   }
 }
+
+}  // namespace tinynet

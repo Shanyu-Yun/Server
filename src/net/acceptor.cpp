@@ -5,6 +5,8 @@
 
 #include "base/logger.hpp"
 
+namespace tinynet {
+
 Acceptor::Acceptor(EventLoop* loop, const InetAddress& listenAddr, bool reuseport)
     : loop_(loop),
       acceptSocket_(::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0)),
@@ -39,3 +41,5 @@ void Acceptor::handleRead() {
     LOGERROR("Acceptor::handleRead() error");
   }
 }
+
+}  // namespace tinynet

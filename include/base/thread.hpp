@@ -5,6 +5,8 @@
 #include <memory>
 #include <thread>
 
+namespace tinynet {
+
 /**
  * @brief 对 std::thread 的轻量封装，补充线程命名、OS 级 tid 和全局计数。
  *
@@ -117,3 +119,5 @@ class Thread {
    */
   inline static std::atomic<int> numCreated_{0};
 };
+
+}  // namespace tinynet

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+namespace tinynet {
+
 /**
  * @brief Buffer 默认初始容量。
  */
@@ -124,3 +126,5 @@ class Buffer {
    */
   void makeSpace(size_t len);
 };
+
+}  // namespace tinynet

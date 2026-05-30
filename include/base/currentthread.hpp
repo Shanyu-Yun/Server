@@ -1,5 +1,7 @@
 #pragma once
 
+namespace tinynet {
+
 /**
  * @brief 当前线程相关的辅助函数。
  */
@@ -29,3 +31,5 @@ inline int tid() {
 }
 
 }  // namespace CurrentThread
+
+}  // namespace tinynet

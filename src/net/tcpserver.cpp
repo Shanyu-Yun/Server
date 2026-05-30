@@ -5,6 +5,8 @@
 #include "base/logger.hpp"
 #include "net/tcpconnection.hpp"
 
+namespace tinynet {
+
 namespace {
 
 InetAddress getLocalAddr(int sockfd) {
@@ -74,3 +76,5 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr& conn) {
   connections_.erase(conn->getName());
   conn->getLoop()->runInLoop([conn] { conn->connectDestroyed(); });
 }
+
+}  // namespace tinynet

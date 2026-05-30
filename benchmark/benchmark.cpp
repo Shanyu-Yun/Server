@@ -15,6 +15,8 @@
 #include "net/inetaddress.hpp"
 #include "net/tcpserver.hpp"
 
+using namespace tinynet;
+
 // ──────────────────── 配置 ────────────────────
 namespace cfg {
 constexpr uint16_t kPort = 9877;
@@ -113,7 +115,7 @@ int main() {
   const double sendThr = sentMB / elapsed;
   const double recvThr = recvMB / elapsed;
 
-  std::cout << "\n=== muduo benchmark ===\n"
+  std::cout << "\n=== tinynet benchmark ===\n"
             << std::fixed << std::setprecision(2) << "  IO threads : " << cfg::kIOThreads << "\n"
             << "  Clients    : " << cfg::kClients << "\n"
             << "  Duration   : " << elapsed << " s\n"

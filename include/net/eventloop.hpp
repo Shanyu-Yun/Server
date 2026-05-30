@@ -11,6 +11,8 @@
 #include "net/channel.hpp"
 #include "net/poller.hpp"
 
+namespace tinynet {
+
 /**
  * @brief 事件循环，负责在所属线程中等待 IO 事件并分发回调。
  *
@@ -118,3 +120,5 @@ class EventLoop {
   /** @brief 跨线程投递的待执行任务队列。 */
   std::vector<Functor> pendingFunctors_;
 };
+
+}  // namespace tinynet

@@ -5,6 +5,8 @@
 #include "base/buffer.hpp"
 #include "base/timestamp.hpp"
 
+namespace tinynet {
+
 class TcpConnection;
 
 /**
@@ -40,3 +42,5 @@ using HighWaterMarkCallback = std::function<void(const TcpConnectionPtr&, size_t
  * 参数依次为连接指针、输入缓冲区指针、Poller 返回事件时的时间戳。
  */
 using MessageCallback = std::function<void(const TcpConnectionPtr&, Buffer*, Timestamp)>;
+
+}  // namespace tinynet

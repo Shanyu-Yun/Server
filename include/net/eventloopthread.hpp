@@ -6,6 +6,8 @@
 #include "base/thread.hpp"
 #include "net/eventloop.hpp"
 
+namespace tinynet {
+
 /**
  * @brief EventLoop 线程启动时执行的初始化回调。
  *
@@ -59,3 +61,5 @@ class EventLoopThread {
   /** @brief loop 运行前的初始化回调。 */
   ThreadInitCallback callback_;
 };
+
+}  // namespace tinynet

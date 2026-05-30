@@ -7,6 +7,8 @@
 
 #include "base/noncopyable.hpp"
 
+namespace tinynet {
+
 /**
  * @brief 日志级别。
  */
@@ -85,3 +87,5 @@ void LOGDEBUG(std::format_string<Args...> fmt, Args&&... args) {
   Logger::instance().setLogLevel(LogLevel::DEBUG);
   Logger::instance().log(std::format(fmt, std::forward<Args>(args)...));
 }
+
+}  // namespace tinynet

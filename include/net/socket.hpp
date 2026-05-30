@@ -1,6 +1,8 @@
 #pragma once
 #include "net/inetaddress.hpp"
 
+namespace tinynet {
+
 /**
  * @brief RAII 封装一个 TCP socket 文件描述符。
  *
@@ -74,3 +76,5 @@ class Socket {
    */
   const int sockfd_;
 };
+
+}  // namespace tinynet
