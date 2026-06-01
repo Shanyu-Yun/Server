@@ -10,9 +10,11 @@
 #include "base/timestamp.hpp"
 #include "net/channel.hpp"
 #include "net/poller.hpp"
+#include "net/timer.hpp"
 
 namespace tinynet {
 
+class TimerQueue;
 /**
  * @brief 事件循环，负责在所属线程中等待 IO 事件并分发回调。
  *
@@ -91,6 +93,14 @@ class EventLoop {
     return threadId_ == CurrentThread::tid();
   }
 
+  TimerId runAt(Timestamp time, TimerCallback cb);
+
+  TimerId runAfter(double delay, TimerCallback cb);
+
+  TimerId runEvery(double interval, TimerCallback cb);
+
+  void cancel(TimerId timerId);
+
  private:
   /**
    * @brief 向 wakeupFd 写一个字节，唤醒阻塞在 poll 中的 loop 线程。
@@ -122,6 +132,8 @@ class EventLoop {
 
   std::mutex mutex_;                      ///< 保护 pendingFunctors_ 的互斥锁。
   std::vector<Functor> pendingFunctors_;  ///< 跨线程投递的待执行任务队列。
+
+  std::unique_ptr<TimerQueue> timerQueue_;  ///< 定时器队列，管理定时器相关逻辑。
 };
 
 }  // namespace tinynet

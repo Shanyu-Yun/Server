@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "base/logger.hpp"
+#include "net/timerqueue.hpp"
 
 namespace tinynet {
 
@@ -25,6 +26,7 @@ EventLoop::EventLoop()
   wakeupChannel_ = std::make_unique<Channel>(this, wakeupFd_);
   wakeupChannel_->setReadCallback(std::bind(&EventLoop::handleRead, this));
   wakeupChannel_->enableReading();
+  timerQueue_ = std::make_unique<TimerQueue>(this);
 }
 
 EventLoop::~EventLoop() {
@@ -87,6 +89,24 @@ bool EventLoop::hasChannel(Channel* channel) const {
     abort();
   }
   return poller_->hasChannel(channel);
+}
+
+TimerId EventLoop::runAt(Timestamp time, TimerCallback cb) {
+  return timerQueue_->addTimer(std::move(cb), time, 0.0);
+}
+
+TimerId EventLoop::runAfter(double delay, TimerCallback cb) {
+  Timestamp time = Timestamp::now() + static_cast<int64_t>(delay * 1000000);
+  return runAt(time, std::move(cb));
+}
+
+TimerId EventLoop::runEvery(double interval, TimerCallback cb) {
+  Timestamp time = Timestamp::now() + static_cast<int64_t>(interval * 1000000);
+  return timerQueue_->addTimer(std::move(cb), time, interval);
+}
+
+void EventLoop::cancel(TimerId timerId) {
+  timerQueue_->cancel(timerId);
 }
 
 void EventLoop::wakeup() {

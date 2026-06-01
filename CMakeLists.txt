@@ -35,6 +35,6 @@ target_include_directories(tinynet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(tinynet_demo src/main.cpp)
 target_link_libraries(tinynet_demo PRIVATE tinynet)
 
-# ── 基准测试 ─────────────────────────────────────────────────────────────
-add_executable(benchmark benchmark/benchmark.cpp)
-target_link_libraries(benchmark PRIVATE tinynet)
+# ── 测试 ────────────────────────────────────────────────────────────────
+add_executable(timer_test test/timer_test.cpp)
+target_link_libraries(timer_test PRIVATE tinynet)

@@ -141,7 +141,7 @@ void TimerQueue::resetTimerfd(Timestamp when) {
   if (microseconds < 100)
     microseconds = 100;
 
-  itimerspec newValue;
+  itimerspec newValue{};
   newValue.it_value.tv_sec = static_cast<time_t>(microseconds / 1000000);
   newValue.it_value.tv_nsec = static_cast<long>((microseconds % 1000000) * 1000);
   // 设置下一次触发时刻，flags 置 0 表示相对时间，如果需要绝对时间则置 TFD_TIMER_ABSTIME
