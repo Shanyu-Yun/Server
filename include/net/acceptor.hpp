@@ -32,7 +32,9 @@ class Acceptor {
    */
   Acceptor(EventLoop* loop, const InetAddress& listenAddr, bool reuseport);
 
-  /** @brief 析构 Acceptor，禁用 acceptChannel_ 并关闭 acceptSocket_。 */
+  /**
+   * @brief 析构 Acceptor，禁用 acceptChannel_ 并关闭 acceptSocket_。
+   */
   ~Acceptor();
 
   /**
@@ -43,7 +45,9 @@ class Acceptor {
     newConnectionCallback_ = cb;
   }
 
-  /** @brief 返回是否已开始监听。 */
+  /**
+   * @brief 返回是否已开始监听。
+   */
   bool listenning() const {
     return listenning_;
   }
@@ -56,19 +60,16 @@ class Acceptor {
   void listen();
 
  private:
-  /** @brief 处理 acceptChannel_ 上的可读事件，调用 accept 并通知上层。 */
+  /**
+   * @brief 处理 acceptChannel_ 上的可读事件，调用 accept 并通知上层。
+   */
   void handleRead();
 
-  /** @brief 所属事件循环。 */
-  EventLoop* loop_;
-  /** @brief 监听 socket 的 RAII 封装。 */
-  Socket acceptSocket_;
-  /** @brief 监听 socket 对应的 Channel，注册读事件。 */
-  Channel acceptChannel_;
-  /** @brief 是否已调用 listen()。 */
-  bool listenning_;
-  /** @brief 新连接到来时调用的回调，由 TcpServer 设置。 */
-  NewConnectionCallback newConnectionCallback_;
+  EventLoop* loop_;                              ///< 所属事件循环。
+  Socket acceptSocket_;                          ///< 监听 socket 的 RAII 封装。
+  Channel acceptChannel_;                        ///< 监听 socket 对应的 Channel，注册读事件。
+  bool listenning_;                              ///< 是否已调用 listen()。
+  NewConnectionCallback newConnectionCallback_;  ///< 新连接到来时调用的回调，由 TcpServer 设置。
 };
 
 }  // namespace tinynet

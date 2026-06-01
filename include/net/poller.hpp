@@ -17,7 +17,9 @@ class EventLoop;
  */
 class Poller {
  public:
-  /** @brief fd 到 Channel 指针的映射类型。 */
+  /**
+   * @brief 活跃 Channel 指针列表类型。
+   */
   using ChannelList = std::vector<Channel*>;
 
   /**
@@ -26,7 +28,9 @@ class Poller {
    */
   Poller(EventLoop* loop);
 
-  /** @brief 虚析构，供子类安全销毁。 */
+  /**
+   * @brief 虚析构，供子类安全销毁。
+   */
   virtual ~Poller() = default;
 
   /**
@@ -64,12 +68,10 @@ class Poller {
   static Poller* newDefaultPoller(EventLoop* loop);
 
  protected:
-  /** @brief fd 到已注册 Channel 的映射，供子类维护。 */
-  std::unordered_map<int, Channel*> channels_;
+  std::unordered_map<int, Channel*> channels_;  ///< fd 到已注册 Channel 的映射，供子类维护。
 
  private:
-  /** @brief 所属的事件循环。 */
-  EventLoop* ownerLoop_;
+  EventLoop* ownerLoop_;  ///< 所属的事件循环。
 };
 
 }  // namespace tinynet

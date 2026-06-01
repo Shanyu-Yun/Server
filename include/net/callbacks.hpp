@@ -43,4 +43,11 @@ using HighWaterMarkCallback = std::function<void(const TcpConnectionPtr&, size_t
  */
 using MessageCallback = std::function<void(const TcpConnectionPtr&, Buffer*, Timestamp)>;
 
+/**
+ * @brief 定时器回调。
+ *
+ * 无参数，用户可以通过捕获外部变量来获取上下文信息。
+ */
+using TimerCallback = std::function<void()>;
+
 }  // namespace tinynet

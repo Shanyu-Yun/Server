@@ -22,13 +22,19 @@ namespace tinynet {
  */
 class EventLoop {
  public:
-  /** @brief 可投递给事件循环的任务类型。 */
+  /**
+   * @brief 可投递给事件循环的任务类型。
+   */
   using Functor = std::function<void()>;
 
-  /** @brief 构造 EventLoop，绑定到当前线程。 */
+  /**
+   * @brief 构造 EventLoop，绑定到当前线程。
+   */
   EventLoop();
 
-  /** @brief 析构 EventLoop，关闭 wakeupFd。 */
+  /**
+   * @brief 析构 EventLoop，关闭 wakeupFd。
+   */
   ~EventLoop();
 
   /**
@@ -86,39 +92,36 @@ class EventLoop {
   }
 
  private:
-  /** @brief 向 wakeupFd 写一个字节，唤醒阻塞在 poll 中的 loop 线程。 */
+  /**
+   * @brief 向 wakeupFd 写一个字节，唤醒阻塞在 poll 中的 loop 线程。
+   */
   void wakeup();
-  /** @brief 读取 wakeupFd 的数据，清除可读事件。 */
+
+  /**
+   * @brief 读取 wakeupFd 的数据，清除可读事件。
+   */
   void handleRead();
-  /** @brief 逐个执行 pendingFunctors_ 中的任务。 */
+
+  /**
+   * @brief 逐个执行 pendingFunctors_ 中的任务。
+   */
   void doPendingFunctors();
 
-  /** @brief 事件循环是否正在运行。 */
-  std::atomic<bool> looping_;
-  /** @brief 是否已请求退出。 */
-  std::atomic<bool> quit_;
-  /** @brief 是否正在处理 pendingFunctors_。 */
-  std::atomic<bool> callingPendingFunctors_;
+  std::atomic<bool> looping_;                 ///< 事件循环是否正在运行。
+  std::atomic<bool> quit_;                    ///< 是否已请求退出。
+  std::atomic<bool> callingPendingFunctors_;  ///< 是否正在处理 pendingFunctors_。
 
-  /** @brief 创建该 EventLoop 的线程 ID，用于线程安全断言。 */
-  const pid_t threadId_;
-  /** @brief 上一次 Poller::poll 返回的时间戳。 */
-  Timestamp pollReturnTime_;
+  const pid_t threadId_;      ///< 创建该 EventLoop 的线程 ID，用于线程安全断言。
+  Timestamp pollReturnTime_;  ///< 上一次 Poller::poll 返回的时间戳。
 
-  /** @brief 底层 IO 多路复用器。 */
-  std::unique_ptr<Poller> poller_;
-  /** @brief 本轮 poll 返回的活跃 Channel 列表。 */
-  Poller::ChannelList activeChannels_;
+  std::unique_ptr<Poller> poller_;      ///< 底层 IO 多路复用器。
+  Poller::ChannelList activeChannels_;  ///< 本轮 poll 返回的活跃 Channel 列表。
 
-  /** @brief 用于跨线程唤醒的 eventfd 文件描述符。 */
-  int wakeupFd_;
-  /** @brief 封装 wakeupFd_ 的 Channel。 */
-  std::unique_ptr<Channel> wakeupChannel_;
+  int wakeupFd_;                            ///< 用于跨线程唤醒的 eventfd 文件描述符。
+  std::unique_ptr<Channel> wakeupChannel_;  ///< 封装 wakeupFd_ 的 Channel。
 
-  /** @brief 保护 pendingFunctors_ 的互斥锁。 */
-  std::mutex mutex_;
-  /** @brief 跨线程投递的待执行任务队列。 */
-  std::vector<Functor> pendingFunctors_;
+  std::mutex mutex_;                      ///< 保护 pendingFunctors_ 的互斥锁。
+  std::vector<Functor> pendingFunctors_;  ///< 跨线程投递的待执行任务队列。
 };
 
 }  // namespace tinynet

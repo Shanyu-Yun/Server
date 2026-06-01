@@ -22,7 +22,9 @@ class EpollPoller : public Poller {
    */
   EpollPoller(EventLoop* loop);
 
-  /** @brief 析构 EpollPoller，关闭 epollfd。 */
+  /**
+   * @brief 析构 EpollPoller，关闭 epollfd。
+   */
   ~EpollPoller() override;
 
   /**
@@ -53,8 +55,7 @@ class EpollPoller : public Poller {
   bool hasChannel(Channel* channel) const override;
 
  private:
-  /** @brief epoll_event 列表的初始容量。 */
-  static const int kInitEventListSize = 16;
+  static const int kInitEventListSize = 16;  ///< epoll_event 列表的初始容量。
 
   /**
    * @brief 将 epoll_wait 返回的就绪事件填入 activeChannels。
@@ -70,10 +71,8 @@ class EpollPoller : public Poller {
    */
   void update(int operation, Channel* channel);
 
-  /** @brief epoll 实例的文件描述符。 */
-  int epollfd_;
-  /** @brief epoll_wait 结果缓冲区，按需自动扩容。 */
-  std::vector<epoll_event> events_;
+  int epollfd_;                      ///< epoll 实例的文件描述符。
+  std::vector<epoll_event> events_;  ///< epoll_wait 结果缓冲区，按需自动扩容。
 };
 
 }  // namespace tinynet

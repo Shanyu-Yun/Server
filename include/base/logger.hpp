@@ -41,10 +41,7 @@ class Logger : noncopyable {
   void log(std::string msg);
 
  private:
-  /**
-   * @brief 当前日志级别。
-   */
-  LogLevel logLevel_;
+  LogLevel logLevel_;  ///< 当前日志级别。
 
   /**
    * @brief 构造 Logger 单例。

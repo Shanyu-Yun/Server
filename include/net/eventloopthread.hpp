@@ -28,8 +28,7 @@ class EventLoopThread {
    * @param cb   线程启动后、loop 运行前调用的初始化回调，可为空。
    * @param name 线程名称，用于日志和调试，可为空。
    */
-  EventLoopThread(const ThreadInitCallback& cb = ThreadInitCallback(),
-                  const std::string& name = std::string());
+  EventLoopThread(const ThreadInitCallback& cb = ThreadInitCallback(), const std::string& name = std::string());
 
   /**
    * @brief 析构 EventLoopThread。
@@ -45,21 +44,17 @@ class EventLoopThread {
   EventLoop* startLoop();
 
  private:
-  /** @brief 后台线程的入口函数，创建 EventLoop 并通知 startLoop 返回。 */
+  /**
+   * @brief 后台线程的入口函数，创建 EventLoop 并通知 startLoop 返回。
+   */
   void threadFunc();
 
-  /** @brief 后台线程中创建的 EventLoop，由 threadFunc 填充。 */
-  EventLoop* loop_;
-  /** @brief 析构时是否已请求退出。 */
-  bool exiting_;
-  /** @brief 后台线程的 RAII 封装。 */
-  Thread thread_;
-  /** @brief 保护 loop_ 可见性的互斥锁。 */
-  std::mutex mutex_;
-  /** @brief startLoop 等待 loop_ 就绪的条件变量。 */
-  std::condition_variable condVar_;
-  /** @brief loop 运行前的初始化回调。 */
-  ThreadInitCallback callback_;
+  EventLoop* loop_;                  ///< 后台线程中创建的 EventLoop，由 threadFunc 填充。
+  bool exiting_;                     ///< 析构时是否已请求退出。
+  Thread thread_;                    ///< 后台线程的 RAII 封装。
+  std::mutex mutex_;                 ///< 保护 loop_ 可见性的互斥锁。
+  std::condition_variable condVar_;  ///< startLoop 等待 loop_ 就绪的条件变量。
+  ThreadInitCallback callback_;      ///< loop 运行前的初始化回调。
 };
 
 }  // namespace tinynet

@@ -60,20 +60,9 @@ class InetAddress {
   void setSockAddr(const sockaddr_in& addr);
 
  private:
-  /**
-   * @brief 主机字节序端口。
-   */
-  uint16_t port_;
-
-  /**
-   * @brief 点分十进制 IPv4 字符串。
-   */
-  std::string ip_;
-
-  /**
-   * @brief 底层 IPv4 socket 地址。
-   */
-  sockaddr_in addr_;
+  uint16_t port_;     ///< 主机字节序端口。
+  std::string ip_;    ///< 点分十进制 IPv4 字符串。
+  sockaddr_in addr_;  ///< 底层 IPv4 socket 地址。
 };
 
 }  // namespace tinynet

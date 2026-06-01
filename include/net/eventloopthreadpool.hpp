@@ -23,7 +23,9 @@ class EventLoopThreadPool {
    */
   EventLoopThreadPool(EventLoop* baseLoop, const std::string& nameArg);
 
-  /** @brief 析构线程池。各 EventLoopThread 在析构时自动 join。 */
+  /**
+   * @brief 析构线程池。各 EventLoopThread 在析构时自动 join。
+   */
   ~EventLoopThreadPool();
 
   /**
@@ -57,20 +59,13 @@ class EventLoopThreadPool {
   std::vector<EventLoop*> getAllLoops();
 
  private:
-  /** @brief 主事件循环（TcpServer 所在线程）。 */
-  EventLoop* baseLoop_;
-  /** @brief 线程名称前缀。 */
-  std::string name_;
-  /** @brief 是否已调用 start()。 */
-  bool started_;
-  /** @brief 要创建的 IO 线程数量。 */
-  int numThreads_;
-  /** @brief 轮询下标，指向下一个要返回的 loop。 */
-  int next_;
-  /** @brief 管理所有 IO 线程对象的生命周期。 */
-  std::vector<std::unique_ptr<EventLoopThread>> threads_;
-  /** @brief 所有 IO 线程的 EventLoop 指针，与 threads_ 一一对应。 */
-  std::vector<EventLoop*> loops_;
+  EventLoop* baseLoop_;                                    ///< 主事件循环（TcpServer 所在线程）。
+  std::string name_;                                       ///< 线程名称前缀。
+  bool started_;                                           ///< 是否已调用 start()。
+  int numThreads_;                                         ///< 要创建的 IO 线程数量。
+  int next_;                                               ///< 轮询下标，指向下一个要返回的 loop。
+  std::vector<std::unique_ptr<EventLoopThread>> threads_;  ///< 管理所有 IO 线程对象的生命周期。
+  std::vector<EventLoop*> loops_;                          ///< 所有 IO 线程的 EventLoop 指针，与 threads_ 一一对应。
 };
 
 }  // namespace tinynet

@@ -34,8 +34,7 @@ class TcpServer {
    * @param name       服务器名称，用于日志和连接命名。
    * @param option     是否开启 SO_REUSEPORT。
    */
-  TcpServer(EventLoop* loop, const InetAddress listenAddr, std::string name,
-            Option option = kNoReusePort);
+  TcpServer(EventLoop* loop, const InetAddress listenAddr, std::string name, Option option = kNoReusePort);
 
   /**
    * @brief 析构 TcpServer，销毁所有存活连接。
@@ -53,50 +52,50 @@ class TcpServer {
    * @brief 设置 IO 线程数量，必须在 start() 前调用。
    * @param numThreads IO 线程数，0 表示在 main loop 中处理所有连接。
    */
-  void setThreadNum(int numThreads)                  { threadPool_->setThreadNum(numThreads); }
+  void setThreadNum(int numThreads) {
+    threadPool_->setThreadNum(numThreads);
+  }
 
   /**
    * @brief 设置每个 IO 线程启动时的初始化回调。
    * @param cb 初始化回调，参数为该线程的 EventLoop 指针。
    */
-  void setThreadInitCallback(const ThreadInitCallback& cb) { threadInitCallback_ = cb; }
+  void setThreadInitCallback(const ThreadInitCallback& cb) {
+    threadInitCallback_ = cb;
+  }
 
   /**
    * @brief 设置连接建立/断开时的回调。
    * @param cb 回调函数，参数为对应的 TcpConnectionPtr。
    */
-  void setConnectionCallback(const ConnectionCallback& cb) { connectionCallback_ = cb; }
+  void setConnectionCallback(const ConnectionCallback& cb) {
+    connectionCallback_ = cb;
+  }
 
   /**
    * @brief 设置有数据可读时的回调。
    * @param cb 回调函数，参数为连接指针、输入缓冲区、事件时间戳。
    */
-  void setMessageCallback(const MessageCallback& cb)       { messageCallback_    = cb; }
+  void setMessageCallback(const MessageCallback& cb) {
+    messageCallback_ = cb;
+  }
 
  private:
-  /** @brief main loop，运行 Acceptor。 */
-  EventLoop*   loop_;
-  /** @brief 服务器名称。 */
-  const std::string name_;
-  /** @brief 监听地址字符串，用于连接命名。 */
-  const std::string ipPort_;
+  EventLoop* loop_;           ///< main loop，运行 Acceptor。
+  const std::string name_;    ///< 服务器名称。
+  const std::string ipPort_;  ///< 监听地址字符串，用于连接命名。
 
-  /** @brief 监听 socket 的封装，负责 accept 新连接。 */
-  std::unique_ptr<Acceptor>             acceptor_;
-  /** @brief IO 线程池，持有所有 IO EventLoop。 */
-  std::shared_ptr<EventLoopThreadPool>  threadPool_;
+  std::unique_ptr<Acceptor> acceptor_;               ///< 监听 socket 的封装，负责 accept 新连接。
+  std::shared_ptr<EventLoopThreadPool> threadPool_;  ///< IO 线程池，持有所有 IO EventLoop。
 
-  ConnectionCallback    connectionCallback_;    ///< 连接建立/断开回调
-  MessageCallback       messageCallback_;       ///< 数据可读回调
-  WriteCompleteCallback writeCompleteCallback_; ///< 写完成回调
-  ThreadInitCallback    threadInitCallback_;    ///< IO 线程初始化回调
+  ConnectionCallback connectionCallback_;        ///< 连接建立/断开回调
+  MessageCallback messageCallback_;              ///< 数据可读回调
+  WriteCompleteCallback writeCompleteCallback_;  ///< 写完成回调
+  ThreadInitCallback threadInitCallback_;        ///< IO 线程初始化回调
 
-  /** @brief start() 是否已执行的原子标志，防止重复启动。 */
-  std::atomic<int> started_;
-  /** @brief 自增连接 ID，用于生成唯一连接名称。 */
-  int              nextConnId_;
-  /** @brief 已建立的所有连接，以连接名称为 key。 */
-  std::unordered_multimap<std::string, TcpConnectionPtr> connections_;
+  std::atomic<int> started_;  ///< start() 是否已执行的原子标志，防止重复启动。
+  int nextConnId_;            ///< 自增连接 ID，用于生成唯一连接名称。
+  std::unordered_multimap<std::string, TcpConnectionPtr> connections_;  ///< 已建立的所有连接，以连接名称为 key。
 
   /**
    * @brief Acceptor 的新连接回调，在 main loop 中将连接分配给 IO loop。

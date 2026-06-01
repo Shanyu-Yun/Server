@@ -84,40 +84,14 @@ class Thread {
   }
 
  private:
-  /**
-   * @brief 是否已调用 start()。
-   */
-  bool started_;
+  bool started_;                         ///< 是否已调用 start()。
+  bool joined_;                          ///< 是否已调用 join()。
+  std::shared_ptr<std::thread> thread_;  ///< 底层 std::thread 对象。
+  pid_t tid_;                            ///< 线程的 OS 级线程 ID，由 start() 在新线程内填充。
+  ThreadFunc func_;                      ///< 线程执行的任务。
+  std::string name_;                     ///< 线程名称。
 
-  /**
-   * @brief 是否已调用 join()。
-   */
-  bool joined_;
-
-  /**
-   * @brief 底层 std::thread 对象。
-   */
-  std::shared_ptr<std::thread> thread_;
-
-  /**
-   * @brief 线程的 OS 级线程 ID，由 start() 在新线程内填充。
-   */
-  pid_t tid_;
-
-  /**
-   * @brief 线程执行的任务。
-   */
-  ThreadFunc func_;
-
-  /**
-   * @brief 线程名称。
-   */
-  std::string name_;
-
-  /**
-   * @brief 已创建的 Thread 对象总数。
-   */
-  inline static std::atomic<int> numCreated_{0};
+  inline static std::atomic<int> numCreated_{0};  ///< 已创建的 Thread 对象总数。
 };
 
 }  // namespace tinynet

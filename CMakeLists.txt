@@ -25,6 +25,8 @@ add_library(tinynet STATIC
   src/net/tcpserver.cpp
   src/net/eventloopthread.cpp
   src/net/eventloopthreadpool.cpp
+  src/net/timer.cpp
+  src/net/timerqueue.cpp
 )
 
 target_include_directories(tinynet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

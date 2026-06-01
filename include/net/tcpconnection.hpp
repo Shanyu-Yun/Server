@@ -36,7 +36,9 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
   TcpConnection(EventLoop* loop, std::string name, int sockfd, const InetAddress& localAddr,
                 const InetAddress& peerAddr);
 
-  /** @brief 析构 TcpConnection，断言连接已处于 kDisconnected 状态。 */
+  /**
+   * @brief 析构 TcpConnection，断言连接已处于 kDisconnected 状态。
+   */
   ~TcpConnection();
 
   /**
@@ -54,18 +56,27 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
    */
   void shutdown();
 
-  /** @brief 设置连接建立/断开时的回调。 */
+  /**
+   * @brief 设置连接建立/断开时的回调。
+   */
   void setConnectionCallback(const ConnectionCallback& cb) {
     connectionCallback_ = cb;
   }
-  /** @brief 设置有数据可读时的回调。 */
+
+  /**
+   * @brief 设置有数据可读时的回调。
+   */
   void setMessageCallback(const MessageCallback& cb) {
     messageCallback_ = cb;
   }
-  /** @brief 设置输出缓冲区清空时的回调。 */
+
+  /**
+   * @brief 设置输出缓冲区清空时的回调。
+   */
   void setWriteCompleteCallback(const WriteCompleteCallback& cb) {
     writeCompleteCallback_ = cb;
   }
+
   /**
    * @brief 设置输出缓冲区首次超过高水位时的回调。
    * @param cb            回调函数。
@@ -75,28 +86,45 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
     highWaterMarkCallback_ = cb;
     highWaterMark_ = highWaterMark;
   }
-  /** @brief 设置连接关闭时的回调（内部由 TcpServer 使用）。 */
+
+  /**
+   * @brief 设置连接关闭时的回调（内部由 TcpServer 使用）。
+   */
   void setCloseCallback(const CloseCallback& cb) {
     closeCallback_ = cb;
   }
 
-  /** @brief 返回所属 IO EventLoop。 */
+  /**
+   * @brief 返回所属 IO EventLoop。
+   */
   EventLoop* getLoop() const {
     return loop_;
   }
-  /** @brief 返回连接名称。 */
+
+  /**
+   * @brief 返回连接名称。
+   */
   const std::string& getName() const {
     return name_;
   }
-  /** @brief 返回本端地址。 */
+
+  /**
+   * @brief 返回本端地址。
+   */
   const InetAddress& getLocalAddr() const {
     return localAddr_;
   }
-  /** @brief 返回对端地址。 */
+
+  /**
+   * @brief 返回对端地址。
+   */
   const InetAddress& getPeerAddr() const {
     return peerAddr_;
   }
-  /** @brief 返回连接是否处于已建立状态。 */
+
+  /**
+   * @brief 返回连接是否处于已建立状态。
+   */
   bool isConnected() const {
     return state_ == StateE::kConnected;
   }
@@ -116,24 +144,16 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
   void connectDestroyed();
 
  private:
-  /** @brief 所属 IO 事件循环。 */
-  EventLoop* loop_;
-  /** @brief 连接唯一名称。 */
-  const std::string name_;
-  /** @brief 连接当前状态，原子读写。 */
-  std::atomic<StateE> state_;
-  /** @brief 是否正在读（channel_ 是否已注册读事件）。 */
-  bool reading_;
+  EventLoop* loop_;            ///< 所属 IO 事件循环。
+  const std::string name_;     ///< 连接唯一名称。
+  std::atomic<StateE> state_;  ///< 连接当前状态，原子读写。
+  bool reading_;               ///< 是否正在读（channel_ 是否已注册读事件）。
 
-  /** @brief 持有 socket fd 的 RAII 对象。 */
-  std::unique_ptr<Socket> socket_;
-  /** @brief socket fd 对应的 Channel，负责 IO 事件分发。 */
-  std::unique_ptr<Channel> channel_;
+  std::unique_ptr<Socket> socket_;    ///< 持有 socket fd 的 RAII 对象。
+  std::unique_ptr<Channel> channel_;  ///< socket fd 对应的 Channel，负责 IO 事件分发。
 
-  /** @brief 本端地址。 */
-  const InetAddress localAddr_;
-  /** @brief 对端地址。 */
-  const InetAddress peerAddr_;
+  const InetAddress localAddr_;  ///< 本端地址。
+  const InetAddress peerAddr_;   ///< 对端地址。
 
   ConnectionCallback connectionCallback_;        ///< 连接建立/断开回调
   MessageCallback messageCallback_;              ///< 数据可读回调
@@ -141,24 +161,38 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
   HighWaterMarkCallback highWaterMarkCallback_;  ///< 高水位回调
   CloseCallback closeCallback_;                  ///< 关闭回调（TcpServer 内部）
 
-  /** @brief 输出缓冲区高水位阈值（字节）。 */
-  size_t highWaterMark_;
-  /** @brief 输入缓冲区，缓存从 socket 读取的数据。 */
-  Buffer inputBuffer_;
-  /** @brief 输出缓冲区，缓存待写入 socket 的数据。 */
-  Buffer outputBuffer_;
+  size_t highWaterMark_;  ///< 输出缓冲区高水位阈值（字节）。
+  Buffer inputBuffer_;    ///< 输入缓冲区，缓存从 socket 读取的数据。
+  Buffer outputBuffer_;   ///< 输出缓冲区，缓存待写入 socket 的数据。
 
-  /** @brief 处理 socket 可读事件，从 fd 读数据到 inputBuffer_。 */
+  /**
+   * @brief 处理 socket 可读事件，从 fd 读数据到 inputBuffer_。
+   */
   void handleRead(Timestamp receiveTime);
-  /** @brief 处理 socket 可写事件，将 outputBuffer_ 中的数据写入 fd。 */
+
+  /**
+   * @brief 处理 socket 可写事件，将 outputBuffer_ 中的数据写入 fd。
+   */
   void handleWrite();
-  /** @brief 处理连接关闭事件，转换状态并触发 closeCallback_。 */
+
+  /**
+   * @brief 处理连接关闭事件，转换状态并触发 closeCallback_。
+   */
   void handleClose();
-  /** @brief 处理 socket 错误事件，记录日志。 */
+
+  /**
+   * @brief 处理 socket 错误事件，记录日志。
+   */
   void handleError();
-  /** @brief 在 IO 线程中执行实际的数据发送逻辑。 */
+
+  /**
+   * @brief 在 IO 线程中执行实际的数据发送逻辑。
+   */
   void sendInLoop(const std::string& message);
-  /** @brief 在 IO 线程中执行实际的写端半关闭逻辑。 */
+
+  /**
+   * @brief 在 IO 线程中执行实际的写端半关闭逻辑。
+   */
   void shutdownInLoop();
 };
 

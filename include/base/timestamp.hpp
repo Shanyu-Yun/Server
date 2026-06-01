@@ -36,16 +36,56 @@ class Timestamp {
    */
   std::string toString() const;
 
- private:
   /**
-   * @brief 每秒包含的微秒数。
+   * @brief 返回内部微秒数，供比较与运算使用。
    */
-  static constexpr int64_t kMicroSecondsPerSecond = 1000 * 1000;
+  int64_t microSecondsSinceEpoch() const {
+    return microSecondsSinceEpoch_;
+  }
 
   /**
-   * @brief 从 Unix Epoch 起经过的微秒数。
+   * @brief 时间戳是否有效（>0）。
    */
-  int64_t microSecondsSinceEpoch_;
+  bool valid() const {
+    return microSecondsSinceEpoch_ > 0;
+  }
+
+  /**
+   * @brief 返回一个无效时间戳（值为 0）。
+   */
+  static Timestamp invalid() {
+    return Timestamp();
+  }
+
+  // 运算符重载
+  inline bool operator<(const Timestamp& rhs) const {
+    return microSecondsSinceEpoch_ < rhs.microSecondsSinceEpoch_;
+  }
+
+  inline bool operator==(const Timestamp& rhs) const {
+    return microSecondsSinceEpoch_ == rhs.microSecondsSinceEpoch_;
+  }
+
+  inline bool operator!=(const Timestamp& rhs) const {
+    return microSecondsSinceEpoch_ != rhs.microSecondsSinceEpoch_;
+  }
+
+  inline bool operator>(const Timestamp& rhs) const {
+    return microSecondsSinceEpoch_ > rhs.microSecondsSinceEpoch_;
+  }
+
+  // 友元函数
+  inline Timestamp operator+(int64_t microseconds) {
+    return Timestamp(microSecondsSinceEpoch_ + microseconds);
+  }
+
+  inline Timestamp operator-(int64_t microseconds) {
+    return Timestamp(microSecondsSinceEpoch_ - microseconds);
+  }
+
+ private:
+  static constexpr int64_t kMicroSecondsPerSecond = 1000 * 1000;  ///< 每秒包含的微秒数。
+  int64_t microSecondsSinceEpoch_;                                ///< 从 Unix Epoch 起经过的微秒数。
 };
 
 }  // namespace tinynet

@@ -71,10 +71,7 @@ class Socket {
   void setKeepAlive(bool on);
 
  private:
-  /**
-   * @brief 持有并负责关闭的 socket 文件描述符。
-   */
-  const int sockfd_;
+  const int sockfd_;  ///< 持有并负责关闭的 socket 文件描述符。
 };
 
 }  // namespace tinynet

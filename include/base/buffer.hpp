@@ -104,20 +104,9 @@ class Buffer {
   ssize_t readFd(int fd, int* savedErrno);
 
  private:
-  /**
-   * @brief 可读数据起始下标。
-   */
-  std::size_t readerIndex_;
-
-  /**
-   * @brief 可写数据起始下标。
-   */
-  std::size_t writerIndex_;
-
-  /**
-   * @brief 实际存储字节数据的连续空间。
-   */
-  std::vector<char> buffer_;
+  std::size_t readerIndex_;   ///< 可读数据起始下标。
+  std::size_t writerIndex_;   ///< 可写数据起始下标。
+  std::vector<char> buffer_;  ///< 实际存储字节数据的连续空间。
 
  private:
   /**
