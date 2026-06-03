@@ -4,6 +4,7 @@
 
 #include "base/logger.hpp"
 #include "net/tcpconnection.hpp"
+#include "net/timingwheel.hpp"
 
 namespace tinynet {
 
@@ -47,6 +48,11 @@ void TcpServer::start() {
   int expected = 0;
   if (started_.compare_exchange_strong(expected, 1)) {
     threadPool_->start(threadInitCallback_);
+    if (idleTimeout_ > 0) {
+      for (EventLoop* loop : threadPool_->getAllLoops()) {
+        wheels_[loop] = std::make_shared<TimingWheel>(loop, idleTimeout_);
+      }
+    }
     loop_->runInLoop([this] { acceptor_->listen(); });
   }
 }
@@ -60,8 +66,20 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
 
   auto conn = std::make_shared<TcpConnection>(ioLoop, connName, sockfd, localAddr, peerAddr);
   connections_.emplace(connName, conn);
-  conn->setConnectionCallback(connectionCallback_);
-  conn->setMessageCallback(messageCallback_);
+  if (idleTimeout_ > 0) {
+    auto wheel = wheels_[ioLoop];
+    conn->setConnectionCallback([wheel, cb = connectionCallback_](const TcpConnectionPtr& c) {
+      if (c->isConnected()) wheel->onConnection(c);
+      if (cb) cb(c);
+    });
+    conn->setMessageCallback([wheel, cb = messageCallback_](const TcpConnectionPtr& c, Buffer* buf, Timestamp ts) {
+      wheel->onMessage(c, buf, ts);
+      if (cb) cb(c, buf, ts);
+    });
+  } else {
+    conn->setConnectionCallback(connectionCallback_);
+    conn->setMessageCallback(messageCallback_);
+  }
   conn->setWriteCompleteCallback(writeCompleteCallback_);
   conn->setCloseCallback([this](const TcpConnectionPtr& c) { removeConnection(c); });
   ioLoop->runInLoop([conn] { conn->connectEstablished(); });

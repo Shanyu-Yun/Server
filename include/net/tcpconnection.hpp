@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <atomic>
 #include <memory>
 #include <string>
@@ -143,6 +144,46 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
    */
   void connectDestroyed();
 
+  /**
+   * @brief 设置用户自定义的上下文数据，可以在回调中通过 getContext() 获取。
+   * 
+   * @param ctx 用户自定义的上下文数据，可以是任意类型。
+   */
+  inline void setContext(const std::any& ctx) {
+    context_ = ctx;
+  }
+
+  /**
+   * @brief 获取用户自定义的上下文数据，可以在回调中通过 setContext() 设置。 
+   * 
+   * @return 用户自定义的上下文数据，可能包含任意类型，可以在回调中通过 setContext() 设置。
+  */
+  inline const std::any& getContext() const {
+    return context_;
+  }
+
+  /**
+   * @brief 获取用户自定义的上下文数据的可修改引用，可以在回调中通过 setContext() 设置。 
+   * 
+   * @return 用户自定义的上下文数据的可修改引用，可能包含任意类型，可以在回调中通过 setContext() 设置。
+   */
+  inline std::any* getMutableContext() {
+    return &context_;
+  }
+
+  /**
+   * @brief 强制关闭连接，立即断开并触发 closeCallback_。
+   * 
+   */
+  void forceClose();
+
+  /**
+   * @brief 强制关闭连接，延迟 seconds 秒后断开并触发 closeCallback_。
+   * 
+   * @param seconds 延迟秒数，单位为秒。
+   */
+  void forceCloseWithDelay(double seconds);
+
  private:
   EventLoop* loop_;            ///< 所属 IO 事件循环。
   const std::string name_;     ///< 连接唯一名称。
@@ -164,6 +205,8 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
   size_t highWaterMark_;  ///< 输出缓冲区高水位阈值（字节）。
   Buffer inputBuffer_;    ///< 输入缓冲区，缓存从 socket 读取的数据。
   Buffer outputBuffer_;   ///< 输出缓冲区，缓存待写入 socket 的数据。
+
+  std::any context_;  ///< 用户自定义的上下文数据
 
   /**
    * @brief 处理 socket 可读事件，从 fd 读数据到 inputBuffer_。
@@ -194,6 +237,11 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
    * @brief 在 IO 线程中执行实际的写端半关闭逻辑。
    */
   void shutdownInLoop();
+
+  /**
+   * @brief 在 IO 线程中执行实际的强制关闭连接逻辑。
+   */
+  void forceCloseInLoop();
 };
 
 }  // namespace tinynet

@@ -10,6 +10,7 @@
 #include "net/eventloopthreadpool.hpp"
 #include "net/inetaddress.hpp"
 #include "net/tcpconnection.hpp"  // IWYU pragma: keep
+#include "net/timingwheel.hpp"
 
 namespace tinynet {
 
@@ -80,6 +81,16 @@ class TcpServer {
     messageCallback_ = cb;
   }
 
+  /**
+   * @brief 启用连接空闲超时，必须在 start() 前调用。
+   *
+   * 内部为每个 IO 线程创建一个 TimingWheel，空闲超过 seconds 秒的连接将被强制断开。
+   * @param seconds 空闲超时秒数，0 表示禁用（默认）。
+   */
+  void setIdleTimeout(int seconds) {
+    idleTimeout_ = seconds;
+  }
+
  private:
   EventLoop* loop_;           ///< main loop，运行 Acceptor。
   const std::string name_;    ///< 服务器名称。
@@ -96,6 +107,9 @@ class TcpServer {
   std::atomic<int> started_;  ///< start() 是否已执行的原子标志，防止重复启动。
   int nextConnId_;            ///< 自增连接 ID，用于生成唯一连接名称。
   std::unordered_multimap<std::string, TcpConnectionPtr> connections_;  ///< 已建立的所有连接，以连接名称为 key。
+
+  int idleTimeout_ = 0;  ///< 空闲超时秒数，0 表示禁用。
+  std::unordered_map<EventLoop*, std::shared_ptr<TimingWheel>> wheels_;  ///< 每个 IO loop 对应的时间轮。
 
   /**
    * @brief Acceptor 的新连接回调，在 main loop 中将连接分配给 IO loop。

@@ -10,8 +10,8 @@
 
 namespace tinynet {
 
-TcpConnection::TcpConnection(EventLoop* loop, std::string name, int sockfd,
-                             const InetAddress& localAddr, const InetAddress& peerAddr)
+TcpConnection::TcpConnection(EventLoop* loop, std::string name, int sockfd, const InetAddress& localAddr,
+                             const InetAddress& peerAddr)
     : loop_(loop),
       name_(std::move(name)),
       state_(StateE::kConnecting),
@@ -66,6 +66,20 @@ void TcpConnection::connectDestroyed() {
     if (connectionCallback_)
       connectionCallback_(shared_from_this());
     LOGINFO("TcpConnection::connectDestroyed [{}] at {}", name_, static_cast<const void*>(this));
+  }
+}
+
+void TcpConnection::forceClose() {
+  if (state_ == StateE::kConnected || state_ == StateE::kDisconnecting) {
+    state_ = StateE::kDisconnecting;
+    loop_->runInLoop([self = shared_from_this()]() { self->forceCloseInLoop(); });
+  }
+}
+
+void TcpConnection::forceCloseWithDelay(double seconds) {
+  if (state_ == StateE::kConnected || state_ == StateE::kDisconnecting) {
+    state_ = StateE::kDisconnecting;
+    loop_->runAfter(seconds, [self = shared_from_this()]() { self->forceCloseInLoop(); });
   }
 }
 
@@ -127,6 +141,13 @@ void TcpConnection::sendInLoop(const std::string& message) {
     return;
   }
 
+  // 单次发送超过高水位：几乎必然是调用方 bug，拒绝而非静默堆积
+  if (message.size() > highWaterMark_) {
+    LOGERROR("TcpConnection::sendInLoop() [{}] message too large: {} bytes (highWaterMark {})",
+             name_, message.size(), highWaterMark_);
+    return;
+  }
+
   // 如果没有正在写且输出缓冲区没有待发送数据，尝试直接写入 socket
   if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
     // 直接写入数据到 socket，减少一次内核拷贝
@@ -149,9 +170,8 @@ void TcpConnection::sendInLoop(const std::string& message) {
   if (!faultError && remaining > 0) {
     const size_t oldLen = outputBuffer_.readableBytes();
     if (oldLen + remaining >= highWaterMark_ && oldLen < highWaterMark_ && highWaterMarkCallback_) {
-      loop_->queueInLoop([self = shared_from_this(), len = oldLen + remaining] {
-        self->highWaterMarkCallback_(self, len);
-      });
+      loop_->queueInLoop(
+          [self = shared_from_this(), len = oldLen + remaining] { self->highWaterMarkCallback_(self, len); });
     }
     outputBuffer_.append(message.data() + nwrote, remaining);
     if (!channel_->isWriting())
@@ -164,4 +184,7 @@ void TcpConnection::shutdownInLoop() {
     socket_->shutdownWrite();
 }
 
+void TcpConnection::forceCloseInLoop() {
+  handleClose();
+}
 }  // namespace tinynet

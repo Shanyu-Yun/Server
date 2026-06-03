@@ -7,6 +7,8 @@
 
 namespace tinynet {
 
+const std::string kCRLF = "\r\n";
+
 Buffer::Buffer(std::size_t initialSize) : readerIndex_(0), writerIndex_(0), buffer_(initialSize) {}
 
 size_t Buffer::readableBytes() const {
@@ -57,6 +59,10 @@ char* Buffer::beginWrite() {
   return buffer_.data() + writerIndex_;
 }
 
+const char* Buffer::beginWrite() const {
+  return buffer_.data() + writerIndex_;
+}
+
 ssize_t Buffer::writeFd(int fd, int* savedErrno) {
   ssize_t n = ::write(fd, peek(), readableBytes());
   if (n >= 0)
@@ -86,6 +92,11 @@ ssize_t Buffer::readFd(int fd, int* savedErrno) {
     *savedErrno = errno;
   }
   return n;
+}
+
+const char* Buffer::findCRLF() const {
+  const char* crlf = std::search(peek(), beginWrite(), kCRLF.begin(), kCRLF.end());
+  return crlf == beginWrite() ? nullptr : crlf;
 }
 
 void Buffer::makeSpace(size_t len) {

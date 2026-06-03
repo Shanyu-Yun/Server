@@ -37,7 +37,7 @@ class Timestamp {
   std::string toString() const;
 
   /**
-   * @brief 返回内部微秒数，供比较与运算使用。
+   * @brief 返回内部微秒数值。
    */
   int64_t microSecondsSinceEpoch() const {
     return microSecondsSinceEpoch_;

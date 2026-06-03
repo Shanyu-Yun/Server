@@ -88,6 +88,11 @@ class Buffer {
   char* beginWrite();
 
   /**
+   * @brief 返回可写区域起始位置的只读指针。
+   * @return 指向 writerIndex_ 的只读指针。
+   */
+  const char* beginWrite() const;
+  /**
    * @brief 将缓冲区中的可读数据写入文件描述符。
    * @param fd 目标文件描述符。
    * @param savedErrno 写入失败时保存 errno。
@@ -102,6 +107,12 @@ class Buffer {
    * @return readv() 的返回值。
    */
   ssize_t readFd(int fd, int* savedErrno);
+
+  /**
+   * @brief 查找 CRLF（"\r\n"）在可读数据中的位置。
+   * @return 指向 CRLF 起始位置的指针，或 nullptr 如果未找到。
+   */
+  const char* findCRLF() const;
 
  private:
   std::size_t readerIndex_;   ///< 可读数据起始下标。

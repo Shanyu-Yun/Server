@@ -27,6 +27,8 @@ add_library(tinynet STATIC
   src/net/eventloopthreadpool.cpp
   src/net/timer.cpp
   src/net/timerqueue.cpp
+  src/net/udpserver.cpp
+  src/net/timingwheel.cpp
 )
 
 target_include_directories(tinynet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -38,3 +40,6 @@ target_link_libraries(tinynet_demo PRIVATE tinynet)
 # ── 测试 ────────────────────────────────────────────────────────────────
 add_executable(timer_test test/timer_test.cpp)
 target_link_libraries(timer_test PRIVATE tinynet)
+
+add_executable(udp_echo_test test/udp_echo_test.cpp)
+target_link_libraries(udp_echo_test PRIVATE tinynet)
