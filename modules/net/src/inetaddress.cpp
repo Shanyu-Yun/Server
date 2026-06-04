@@ -3,7 +3,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-namespace tinynet {
+namespace net {
 
 InetAddress::InetAddress(uint16_t port, std::string ip) : port_(port), ip_(std::move(ip)) {
   addr_ = {};
@@ -37,4 +37,4 @@ void InetAddress::setSockAddr(const sockaddr_in& addr) {
   port_ = ntohs(addr.sin_port);
 }
 
-}  // namespace tinynet
+}  // namespace net

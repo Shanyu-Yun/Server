@@ -2,7 +2,7 @@
 
 #include "net/tcpconnection.hpp"
 
-namespace tinynet {
+namespace net {
 
 TimingWheel::TimingWheel(EventLoop* loop, int timeoutSeconds)
     : loop_(loop), timeoutSeconds_(timeoutSeconds), buckets_(timeoutSeconds) {
@@ -43,4 +43,4 @@ TimingWheel::Entry::~Entry() {
   }
 }
 
-}  // namespace tinynet
+}  // namespace net

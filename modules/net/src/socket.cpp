@@ -6,7 +6,7 @@
 
 #include "base/logger.hpp"
 
-namespace tinynet {
+namespace net {
 
 Socket::Socket(int sockfd) : sockfd_(sockfd) {}
 Socket::~Socket() {
@@ -66,4 +66,4 @@ void Socket::setKeepAlive(bool on) {
   ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval));
 }
 
-}  // namespace tinynet
+}  // namespace net

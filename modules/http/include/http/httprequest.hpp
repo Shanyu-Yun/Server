@@ -10,12 +10,12 @@ namespace http {
 /**
  * @brief HTTP 请求方法。
  */
-enum Method { kInvalid, kGet, kPost, kHead, kPut, kDelete };
+enum class Method { kInvalid, kGet, kPost, kHead, kPut, kDelete };
 
 /**
  * @brief HTTP 协议版本。
  */
-enum Version { kUnknown, kHttp10, kHttp11 };
+enum class Version { kUnknown, kHttp10, kHttp11 };
 
 /**
  * @brief 一次 HTTP 请求的解析结果（值对象）。
@@ -23,6 +23,16 @@ enum Version { kUnknown, kHttp10, kHttp11 };
  * 由 HttpContext 在解析过程中逐字段写入，解析完成后交给用户回调只读访问。
  * 生命周期跨越多次 onMessage（body 可能分段到达），故 method/path/header/body
  * 全部以 std::string 拷贝持有，不持有指向 Buffer 的视图。
+ *
+ * HTTP/1.1 请求报文格式：
+ *
+ *   POST /search?q=hello HTTP/1.1\r\n        <- 请求行：method  path  query  version
+ *   Host: example.com\r\n                    <- 请求头（若干行，key 不区分大小写）
+ *   Content-Type: application/json\r\n
+ *   Content-Length: 18\r\n
+ *   Connection: keep-alive\r\n
+ *   \r\n                                     <- 空行：头部结束标志
+ *   {"key": "value"}                         <- 请求体（长度由 Content-Length 决定）
  */
 class HttpRequest {
  public:
@@ -58,6 +68,8 @@ class HttpRequest {
    * @param start 行起始（key 起点）。
    * @param colon 冒号位置。
    * @param end   行结束（不含 CRLF）。
+   * @note 这里的几个指针位置大概是
+   *【start】Content-Type:[colon] text/html \r\n[end]
    */
   void addHeader(const char* start, const char* colon, const char* end);
 
@@ -69,7 +81,7 @@ class HttpRequest {
   /**
    * @brief 记录请求到达时间。
    */
-  void setReceiveTime(tinynet::Timestamp t);
+  void setReceiveTime(net::Timestamp t);
 
   // —— 用户回调期读取 ——
 
@@ -123,13 +135,13 @@ class HttpRequest {
   void reset();
 
  private:
-  Method method_ = kInvalid;                    ///< 请求方法。
-  Version version_ = kUnknown;                  ///< 协议版本。
+  Method method_ = Method::kInvalid;            ///< 请求方法。
+  Version version_ = Version::kUnknown;         ///< 协议版本。
   std::string path_;                            ///< 请求路径。
   std::string query_;                           ///< 查询串。
   std::string body_;                            ///< 请求体。
   std::map<std::string, std::string> headers_;  ///< 请求头，key 已小写。
-  tinynet::Timestamp receiveTime_;              ///< 请求到达时间。
+  net::Timestamp receiveTime_;                  ///< 请求到达时间。
 };
 
 }  // namespace http

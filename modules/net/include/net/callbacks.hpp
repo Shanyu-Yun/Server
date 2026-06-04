@@ -5,7 +5,7 @@
 #include "base/buffer.hpp"
 #include "base/timestamp.hpp"
 
-namespace tinynet {
+namespace net {
 
 class TcpConnection;
 
@@ -50,4 +50,4 @@ using MessageCallback = std::function<void(const TcpConnectionPtr&, Buffer*, Tim
  */
 using TimerCallback = std::function<void()>;
 
-}  // namespace tinynet
+}  // namespace net

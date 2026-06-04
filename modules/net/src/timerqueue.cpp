@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace tinynet {
+namespace net {
 
 TimerQueue::TimerQueue(EventLoop* loop)
     : loop_(loop),
@@ -148,4 +148,4 @@ void TimerQueue::resetTimerfd(Timestamp when) {
   ::timerfd_settime(timerfd_, 0, &newValue, nullptr);
 }
 
-}  // namespace tinynet
+}  // namespace net

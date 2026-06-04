@@ -1,7 +1,7 @@
 #pragma once
 #include "net/inetaddress.hpp"
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief RAII 封装一个 TCP socket 文件描述符。
@@ -74,4 +74,4 @@ class Socket {
   const int sockfd_;  ///< 持有并负责关闭的 socket 文件描述符。
 };
 
-}  // namespace tinynet
+}  // namespace net

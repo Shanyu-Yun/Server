@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <string>
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief IPv4 地址与端口的轻量封装。
@@ -65,4 +65,4 @@ class InetAddress {
   sockaddr_in addr_;  ///< 底层 IPv4 socket 地址。
 };
 
-}  // namespace tinynet
+}  // namespace net

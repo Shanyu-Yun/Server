@@ -11,7 +11,7 @@
 #include "net/eventloop.hpp"
 #include "net/timer.hpp"  // Timer + TimerId
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief 定时器队列：用 timerfd 把"时间到达"变成 fd 可读事件，融入 Reactor。
@@ -103,4 +103,4 @@ class TimerQueue {
   void resetTimerfd(Timestamp when);
 };
 
-}  // namespace tinynet
+}  // namespace net

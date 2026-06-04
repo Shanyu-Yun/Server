@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief 微秒精度的时间戳。
@@ -88,4 +88,4 @@ class Timestamp {
   int64_t microSecondsSinceEpoch_;                                ///< 从 Unix Epoch 起经过的微秒数。
 };
 
-}  // namespace tinynet
+}  // namespace net

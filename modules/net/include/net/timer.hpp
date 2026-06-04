@@ -6,7 +6,7 @@
 #include "base/timestamp.hpp"
 #include "net/callbacks.hpp"
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief 一个定时任务本身（内部类，不对用户直接暴露）。
@@ -101,4 +101,4 @@ class TimerId {
   int64_t sequence_;  ///< 目标定时器的全局唯一序号。
 };
 
-}  // namespace tinynet
+}  // namespace net

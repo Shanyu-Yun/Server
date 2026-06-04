@@ -4,7 +4,7 @@
 #include <ctime>
 #include <format>
 
-namespace tinynet {
+namespace net {
 
 Timestamp::Timestamp() : microSecondsSinceEpoch_(0) {}
 
@@ -26,4 +26,4 @@ std::string Timestamp::toString() const {
                      tm_time.tm_sec);
 }
 
-}  // namespace tinynet
+}  // namespace net

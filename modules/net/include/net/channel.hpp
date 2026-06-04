@@ -9,7 +9,7 @@
 #include "base/noncopyable.hpp"
 #include "base/timestamp.hpp"
 
-namespace tinynet {
+namespace net {
 
 class EventLoop;
 
@@ -225,4 +225,4 @@ class Channel : noncopyable {
   void handleEventWithGuard(Timestamp receiveTime);
 };
 
-}  // namespace tinynet
+}  // namespace net

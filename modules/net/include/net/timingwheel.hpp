@@ -6,7 +6,7 @@
 #include "base/noncopyable.hpp"
 #include "net/callbacks.hpp"
 
-namespace tinynet {
+namespace net {
 class EventLoop;
 
 /**
@@ -85,4 +85,4 @@ class TimingWheel : noncopyable {
   int timeoutSeconds_;          ///< 空闲超时秒数，等于 buckets_ 的长度。
   std::deque<Bucket> buckets_;  ///< 时间轮主体，队首最老、队尾最新。
 };
-}  // namespace tinynet
+}  // namespace net

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <utility>
 
-namespace tinynet {
+namespace net {
 
 // 全局自增序号计数器，进程内唯一。在此处给出定义（类内只是声明）。
 std::atomic<int64_t> Timer::s_numCreated_{0};
@@ -24,4 +24,4 @@ void Timer::restart(Timestamp now) {
   }
 }
 
-}  // namespace tinynet
+}  // namespace net

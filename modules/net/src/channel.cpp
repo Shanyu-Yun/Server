@@ -2,7 +2,7 @@
 
 #include "net/eventloop.hpp"
 
-namespace tinynet {
+namespace net {
 
 Channel::Channel(EventLoop* loop, int fd)
     : loop_(loop), fd_(fd), events_(0), revents_(0), pollerState_(-1), tied_(false) {}
@@ -50,4 +50,4 @@ void Channel::handleEventWithGuard(Timestamp receiveTime) {
   }
 }
 
-}  // namespace tinynet
+}  // namespace net

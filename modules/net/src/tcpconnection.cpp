@@ -8,7 +8,7 @@
 #include "base/timestamp.hpp"
 #include "net/socket.hpp"
 
-namespace tinynet {
+namespace net {
 
 TcpConnection::TcpConnection(EventLoop* loop, std::string name, int sockfd, const InetAddress& localAddr,
                              const InetAddress& peerAddr)
@@ -187,4 +187,4 @@ void TcpConnection::shutdownInLoop() {
 void TcpConnection::forceCloseInLoop() {
   handleClose();
 }
-}  // namespace tinynet
+}  // namespace net

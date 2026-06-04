@@ -11,7 +11,7 @@
 #include "net/inetaddress.hpp"
 #include "net/socket.hpp"
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief TCP 连接当前所处的生命周期状态。
@@ -244,4 +244,4 @@ class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnec
   void forceCloseInLoop();
 };
 
-}  // namespace tinynet
+}  // namespace net

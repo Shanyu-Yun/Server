@@ -5,7 +5,7 @@
 
 #include "base/logger.hpp"
 
-namespace tinynet {
+namespace net {
 
 Acceptor::Acceptor(EventLoop* loop, const InetAddress& listenAddr, bool reuseport)
     : loop_(loop),
@@ -42,4 +42,4 @@ void Acceptor::handleRead() {
   }
 }
 
-}  // namespace tinynet
+}  // namespace net

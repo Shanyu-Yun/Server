@@ -6,7 +6,7 @@
 #include "net/eventloop.hpp"
 #include "net/eventloopthread.hpp"
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief EventLoop 线程池，为多线程 Reactor 提供 IO 线程管理。
@@ -68,4 +68,4 @@ class EventLoopThreadPool {
   std::vector<EventLoop*> loops_;                          ///< 所有 IO 线程的 EventLoop 指针，与 threads_ 一一对应。
 };
 
-}  // namespace tinynet
+}  // namespace net

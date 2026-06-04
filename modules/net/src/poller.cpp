@@ -2,7 +2,7 @@
 
 #include "net/epollpoller.hpp"
 
-namespace tinynet {
+namespace net {
 
 Poller::Poller(EventLoop* loop) : ownerLoop_(loop) {}
 
@@ -10,4 +10,4 @@ Poller* Poller::newDefaultPoller(EventLoop* loop) {
   return new EpollPoller(loop);
 }
 
-}  // namespace tinynet
+}  // namespace net

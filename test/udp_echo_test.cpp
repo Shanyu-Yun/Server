@@ -16,7 +16,7 @@
 #include "net/inetaddress.hpp"
 #include "net/udpserver.hpp"
 
-using namespace tinynet;
+using namespace net;
 
 namespace {
 constexpr uint16_t kPort = 9999;

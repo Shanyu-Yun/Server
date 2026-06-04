@@ -2,9 +2,11 @@
 #include "base/timestamp.hpp"
 #include "http/httprequest.hpp"
 
-namespace http {
-
+namespace net {
 class Buffer;  // 仅用作指针参数，前置声明即可。
+}
+
+namespace http {
 
 /**
  * @brief 每连接的 HTTP 解析状态机。
@@ -29,12 +31,12 @@ class HttpContext {
    * @brief 尽可能多地推进状态机，直到数据不够或集齐一个请求。
    *
    * 返回值只表达对错：畸形返回 false；返回 true 但 gotAll() 为 false 表示
-   * “数据还不够，等下次 onMessage”。已消费的字节会从 buf 中 retrieve。
+   * “数据还不够，等下次 onMessage”。已处理的字节会从 buf 中 consume。
    * @param buf         输入缓冲区。
    * @param receiveTime 本次数据到达时间。
    * @return 解析是否正常（未遇到畸形）。
    */
-  bool parse(Buffer* buf, tinynet::Timestamp receiveTime);
+  bool parse(net::Buffer* buf, net::Timestamp receiveTime);
 
   /** @brief 是否已集齐一个完整请求。 */
   bool gotAll() const {

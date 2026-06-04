@@ -3,7 +3,7 @@
 #include "net/inetaddress.hpp"
 #include "net/tcpserver.hpp"
 
-using namespace tinynet;
+using namespace net;
 
 int main() {
   EventLoop loop;

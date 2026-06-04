@@ -3,7 +3,7 @@
 #include "base/currentthread.hpp"
 #include "base/logger.hpp"
 
-namespace tinynet {
+namespace net {
 
 Thread::Thread(ThreadFunc func, const std::string& name)
     : started_(false),
@@ -38,4 +38,4 @@ void Thread::join() {
   }
 }
 
-}  // namespace tinynet
+}  // namespace net

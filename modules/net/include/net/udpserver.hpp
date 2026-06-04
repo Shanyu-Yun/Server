@@ -11,7 +11,7 @@
 #include "net/inetaddress.hpp"
 #include "net/socket.hpp"
 
-namespace tinynet {
+namespace net {
 class EventLoop;
 class UdpServer;
 using UdpServerPtr = std::shared_ptr<UdpServer>;
@@ -121,4 +121,4 @@ class UdpServer : noncopyable {
 
   char recvBuf_[64 * 1024];           ///< 单条报文接收缓冲（UDP 理论上限 64KB），供回调零拷贝视图借用。
 };
-}  // namespace tinynet
+}  // namespace net

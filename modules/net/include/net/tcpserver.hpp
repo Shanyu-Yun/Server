@@ -12,7 +12,7 @@
 #include "net/tcpconnection.hpp"  // IWYU pragma: keep
 #include "net/timingwheel.hpp"
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief 监听端口复用选项。
@@ -131,4 +131,4 @@ class TcpServer {
   void removeConnectionInLoop(const TcpConnectionPtr& conn);
 };
 
-}  // namespace tinynet
+}  // namespace net

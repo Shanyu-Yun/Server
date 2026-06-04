@@ -12,7 +12,7 @@
 #include "net/poller.hpp"
 #include "net/timer.hpp"
 
-namespace tinynet {
+namespace net {
 
 class TimerQueue;
 /**
@@ -136,4 +136,4 @@ class EventLoop {
   std::unique_ptr<TimerQueue> timerQueue_;  ///< 定时器队列，管理定时器相关逻辑。
 };
 
-}  // namespace tinynet
+}  // namespace net

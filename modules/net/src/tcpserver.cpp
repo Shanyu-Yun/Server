@@ -6,7 +6,7 @@
 #include "net/tcpconnection.hpp"
 #include "net/timingwheel.hpp"
 
-namespace tinynet {
+namespace net {
 
 namespace {
 
@@ -95,4 +95,4 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr& conn) {
   conn->getLoop()->runInLoop([conn] { conn->connectDestroyed(); });
 }
 
-}  // namespace tinynet
+}  // namespace net

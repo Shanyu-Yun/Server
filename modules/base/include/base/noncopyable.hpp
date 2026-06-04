@@ -1,6 +1,6 @@
 #pragma once
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief 禁止派生类拷贝和赋值的基类。
@@ -31,4 +31,4 @@ class noncopyable {
   ~noncopyable() = default;
 };
 
-}  // namespace tinynet
+}  // namespace net

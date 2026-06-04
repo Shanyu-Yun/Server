@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-namespace tinynet {
+namespace net {
 
 const std::string kCRLF = "\r\n";
 
@@ -25,22 +25,22 @@ const char* Buffer::peek() const {
   return buffer_.data() + readerIndex_;
 }
 
-void Buffer::retrieve(size_t len) {
+void Buffer::consume(size_t len) {
   if (len < readableBytes()) {
     readerIndex_ += len;
   } else {
-    retrieveAll();
+    consumeAll();
   }
 }
 
-void Buffer::retrieveAll() {
+void Buffer::consumeAll() {
   readerIndex_ = 0;
   writerIndex_ = 0;
 }
 
 std::string Buffer::retrieveAsString(size_t len) {
   std::string result(peek(), len);
-  retrieve(len);
+  consume(len);
   return result;
 }
 
@@ -66,7 +66,7 @@ const char* Buffer::beginWrite() const {
 ssize_t Buffer::writeFd(int fd, int* savedErrno) {
   ssize_t n = ::write(fd, peek(), readableBytes());
   if (n >= 0)
-    retrieve(n);
+    consume(n);
   else
     *savedErrno = errno;
   return n;
@@ -110,4 +110,4 @@ void Buffer::makeSpace(size_t len) {
   }
 }
 
-}  // namespace tinynet
+}  // namespace net

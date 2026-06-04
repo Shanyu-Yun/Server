@@ -1,6 +1,6 @@
 #include "net/eventloopthread.hpp"
 
-namespace tinynet {
+namespace net {
 
 EventLoopThread::EventLoopThread(const ThreadInitCallback& cb, const std::string& name)
     : loop_(nullptr),
@@ -40,4 +40,4 @@ void EventLoopThread::threadFunc() {
   loop.loop();
 }
 
-}  // namespace tinynet
+}  // namespace net

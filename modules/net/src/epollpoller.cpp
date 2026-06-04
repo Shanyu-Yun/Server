@@ -8,7 +8,7 @@
 #include "base/logger.hpp"
 #include "base/timestamp.hpp"
 
-namespace tinynet {
+namespace net {
 
 namespace {
 constexpr int kNew = -1;
@@ -98,4 +98,4 @@ void EpollPoller::update(int operation, Channel* channel) {
   }
 }
 
-}  // namespace tinynet
+}  // namespace net

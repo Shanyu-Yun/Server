@@ -5,7 +5,7 @@
 #include "base/timestamp.hpp"
 #include "net/channel.hpp"
 
-namespace tinynet {
+namespace net {
 
 class EventLoop;
 
@@ -74,4 +74,4 @@ class Poller {
   EventLoop* ownerLoop_;  ///< 所属的事件循环。
 };
 
-}  // namespace tinynet
+}  // namespace net

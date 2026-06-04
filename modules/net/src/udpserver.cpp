@@ -7,7 +7,7 @@
 #include "base/logger.hpp"
 #include "net/eventloop.hpp"
 
-namespace tinynet {
+namespace net {
 
 namespace {
 
@@ -125,4 +125,4 @@ void UdpServer::handleWrite() {
     channel_->disableWriting();  // 排空立即关 EPOLLOUT，避免空转
 }
 
-}  // namespace tinynet
+}  // namespace net

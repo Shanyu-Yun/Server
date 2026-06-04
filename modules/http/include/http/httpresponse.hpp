@@ -2,14 +2,18 @@
 #include <map>
 #include <string>
 
-namespace http {
+#include "base/buffer.hpp"
 
+namespace net {
 class Buffer;  // 仅用作指针参数，前置声明即可。
+
+}
+namespace http {
 
 /**
  * @brief 常用 HTTP 状态码（务实子集，不追求 RFC 完整）。
  */
-enum HttpStatusCode {
+enum HttpStatusCode : int {
   k200Ok = 200,
   k400BadRequest = 400,
   k404NotFound = 404,
@@ -58,7 +62,7 @@ class HttpResponse {
    * 依次写入状态行、各响应头、自动补充的 Content-Length 与 Connection、
    * 空行，最后是 body。
    */
-  void appendToBuffer(Buffer* out) const;
+  void appendToBuffer(net::Buffer* out) const;
 
  private:
   HttpStatusCode statusCode_ = k200Ok;          ///< 状态码。

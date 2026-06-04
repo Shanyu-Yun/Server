@@ -15,7 +15,7 @@
 
 // ──────────────────── 主函数 ────────────────────
 int main() {
-  tinynet::EventLoop loop;
+  net::EventLoop loop;
   loop.runAfter(1.0, []() { std::cout << "Timer 1 fired after 1 second\n"; });
   loop.runAfter(2.0, []() { std::cout << "Timer 2 fired after 2 seconds\n"; });
   loop.runEvery(3.0, []() { std::cout << "Timer 3 fired every 3 seconds\n"; });

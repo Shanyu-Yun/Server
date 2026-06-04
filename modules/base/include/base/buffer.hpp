@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace tinynet {
+namespace net {
 
 /**
  * @brief Buffer 默认初始容量。
@@ -51,20 +51,28 @@ class Buffer {
   const char* peek() const;
 
   /**
-   * @brief 标记已经读取指定长度的数据。
-   * @param len 要取出的字节数。
+   * @brief 消费指定长度的可读数据（只前进读下标，不返回数据）。
+   * @param len 要消费的字节数。
    */
-  void retrieve(size_t len);
+  void consume(size_t len);
 
   /**
-   * @brief 取出所有可读数据，并重置读写下标。
+   * @brief 消费所有可读数据，并重置读写下标。
    */
-  void retrieveAll();
+  void consumeAll();
 
   /**
-   * @brief 取出指定长度的数据并转换为字符串。
-   * @param len 要取出的字节数。
-   * @return 包含取出数据的字符串。
+   * @brief 消费数据直到指定位置（不返回数据）。
+   * @param end 消费的终点，需落在 [peek(), beginWrite()) 内。
+   */
+  inline void consumeUntil(const char* end) {
+    consume(end - peek());
+  }
+
+  /**
+   * @brief 取回指定长度的数据并以字符串返回（取回后同时消费）。
+   * @param len 要取回的字节数。
+   * @return 包含取回数据的字符串。
    */
   std::string retrieveAsString(size_t len);
 
@@ -80,6 +88,15 @@ class Buffer {
    * @param len 待追加数据的字节数。
    */
   void append(const char* data, size_t len);
+
+  /**
+   * @brief 追加一个字符串到缓冲区。
+   * 
+   * @param str 
+   */
+  void append(const std::string& str) {
+    append(str.data(), str.size());
+  }
 
   /**
    * @brief 返回可写区域起始位置。
@@ -127,4 +144,4 @@ class Buffer {
   void makeSpace(size_t len);
 };
 
-}  // namespace tinynet
+}  // namespace net

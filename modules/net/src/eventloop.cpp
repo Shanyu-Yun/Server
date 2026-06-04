@@ -6,7 +6,7 @@
 #include "base/logger.hpp"
 #include "net/timerqueue.hpp"
 
-namespace tinynet {
+namespace net {
 
 namespace {
 constexpr int kPollTimeMs = 10000;
@@ -135,4 +135,4 @@ void EventLoop::doPendingFunctors() {
   callingPendingFunctors_ = false;
 }
 
-}  // namespace tinynet
+}  // namespace net

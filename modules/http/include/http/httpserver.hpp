@@ -23,7 +23,7 @@ using HttpCallback = std::function<void(const HttpRequest&, HttpResponse*)>;
  * 数据到达时喂给它增量解析，集齐一个请求后调用用户回调，并支持 pipelining
  * 与 keep-alive。
  */
-class HttpServer : tinynet::noncopyable {
+class HttpServer : net::noncopyable {
  public:
   /**
    * @brief 构造 HttpServer。
@@ -31,7 +31,7 @@ class HttpServer : tinynet::noncopyable {
    * @param listenAddr 监听地址。
    * @param name       服务器名称，用于日志与连接命名。
    */
-  HttpServer(tinynet::EventLoop* loop, const tinynet::InetAddress& listenAddr, std::string name);
+  HttpServer(net::EventLoop* loop, const net::InetAddress& listenAddr, std::string name);
 
   /** @brief 设置请求处理回调。 */
   void setHttpCallback(const HttpCallback& cb) {
@@ -48,19 +48,19 @@ class HttpServer : tinynet::noncopyable {
   /**
    * @brief 新连接建立：为其装入一个 HttpContext。
    */
-  void onConnection(const tinynet::TcpConnectionPtr& conn);
+  void onConnection(const net::TcpConnectionPtr& conn);
 
   /**
    * @brief 数据到达：取出 HttpContext 增量解析，循环派发已集齐的请求。
    */
-  void onMessage(const tinynet::TcpConnectionPtr& conn, Buffer* buf, tinynet::Timestamp receiveTime);
+  void onMessage(const net::TcpConnectionPtr& conn, net::Buffer* buf, net::Timestamp receiveTime);
 
   /**
    * @brief 派发一个完整请求：构造响应、调用用户回调、写回并按需关连接。
    */
-  void onRequest(const tinynet::TcpConnectionPtr& conn, const HttpRequest& req);
+  void onRequest(const net::TcpConnectionPtr& conn, const HttpRequest& req);
 
-  tinynet::TcpServer server_;  ///< 底层 TCP 服务器。
+  net::TcpServer server_;      ///< 底层 TCP 服务器。
   HttpCallback httpCallback_;  ///< 用户请求处理回调。
 };
 
