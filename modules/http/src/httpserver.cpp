@@ -56,8 +56,17 @@ void HttpServer::onRequest(const net::TcpConnectionPtr& conn, const HttpRequest&
   resp.appendToBuffer(&buf);
   conn->send(buf.retrieveAsString(buf.readableBytes()));
 
+  if (resp.getStreaming() && streamCallback_) {
+    streamCallback_(req, &resp, conn);
+  }
+
   if (resp.closeConnection()) {
     conn->shutdown();
   }
 }
+
+std::string HttpServer::makeSseFrame(const std::string& data) {
+  return "data: " + data + "\n\n";
+}
+
 }  // namespace http

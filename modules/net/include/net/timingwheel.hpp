@@ -1,6 +1,8 @@
 #pragma once
 #include <deque>
 #include <memory>
+#include <string>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "base/noncopyable.hpp"
@@ -42,14 +44,17 @@ class TimingWheel : noncopyable {
 
   /**
    * @brief 连接收到消息时调用，刷新该连接的超时计时。
-   *
-   * 从 conn->context_ 取出 weak_ptr<Entry> 并 lock，
-   * 将 shared_ptr<Entry> 重新插入最新格，延长连接的存活窗口。
    * @param conn        收到消息的连接。
    * @param buf         输入缓冲区（本函数不消费数据）。
    * @param receiveTime 消息到达时间戳。
    */
   void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp receiveTime);
+
+  /**
+   * @brief 连接断开时调用，从内部 map 中清除对应 Entry。
+   * @param conn 断开的连接。
+   */
+  void onClose(const TcpConnectionPtr& conn);
 
   ~TimingWheel();
 
@@ -81,8 +86,14 @@ class TimingWheel : noncopyable {
    */
   void onTimer();
 
+  using EntryPtr = std::shared_ptr<Entry>;
+  using WeakEntryPtr = std::weak_ptr<Entry>;
+
   EventLoop* loop_;             ///< 所属事件循环。
   int timeoutSeconds_;          ///< 空闲超时秒数，等于 buckets_ 的长度。
   std::deque<Bucket> buckets_;  ///< 时间轮主体，队首最老、队尾最新。
+
+  /// connName → weak_ptr<Entry>，替代 context_ 存储 Entry 引用，不侵占应用层 context_。
+  std::unordered_map<std::string, WeakEntryPtr> connEntries_;
 };
 }  // namespace net

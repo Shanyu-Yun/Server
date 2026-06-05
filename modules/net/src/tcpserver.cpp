@@ -70,6 +70,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
     auto wheel = wheels_[ioLoop];
     conn->setConnectionCallback([wheel, cb = connectionCallback_](const TcpConnectionPtr& c) {
       if (c->isConnected()) wheel->onConnection(c);
+      else                  wheel->onClose(c);
       if (cb) cb(c);
     });
     conn->setMessageCallback([wheel, cb = messageCallback_](const TcpConnectionPtr& c, Buffer* buf, Timestamp ts) {

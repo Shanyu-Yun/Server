@@ -64,12 +64,30 @@ class HttpResponse {
    */
   void appendToBuffer(net::Buffer* out) const;
 
+  /**
+   * @brief 设置streaming的状态
+   * 
+   * @param on 
+   */
+  void setStreaming(bool on);
+
+  /**
+   * @brief 获得流式响应状态
+   * 
+   * @return true 
+   * @return false 
+   */
+  inline bool getStreaming() {
+    return streaming_;
+  }
+
  private:
   HttpStatusCode statusCode_ = k200Ok;          ///< 状态码。
   std::string statusMessage_;                   ///< 状态短语。
   std::map<std::string, std::string> headers_;  ///< 响应头。
   std::string body_;                            ///< 响应体。
   bool closeConnection_;                        ///< 响应后是否关闭连接。
+  bool streaming_;                              ///< 响应体是否为流式响应
 };
 
 }  // namespace http

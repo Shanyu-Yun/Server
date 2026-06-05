@@ -9,12 +9,8 @@
 
 namespace http {
 
-/**
- * @brief 用户处理一次 HTTP 请求的回调。
- *
- * 框架解析出 req 后调用，用户在 resp 上填写状态码/头/body。
- */
 using HttpCallback = std::function<void(const HttpRequest&, HttpResponse*)>;
+using StreamCallback = std::function<void(const HttpRequest&, HttpResponse*, const net::TcpConnectionPtr&)>;
 
 /**
  * @brief HTTP 服务器，封装 TcpServer，把字节流解析为 HTTP 请求并派发。
@@ -37,12 +33,22 @@ class HttpServer : net::noncopyable {
   void setHttpCallback(const HttpCallback& cb) {
     httpCallback_ = cb;
   }
+  /**
+   * @brief 设置流式传输的回调
+   * 
+   * @param cb 
+   */
+  void setStreamCallback(const StreamCallback& cb) {
+    streamCallback_ = cb;
+  }
 
   /** @brief 设置 IO 线程数，透传给内部 TcpServer，须在 start() 前调用。 */
   void setThreadNum(int n);
 
   /** @brief 启动服务器开始监听。 */
   void start();
+
+  static std::string makeSseFrame(const std::string& data);
 
  private:
   /**
@@ -60,8 +66,9 @@ class HttpServer : net::noncopyable {
    */
   void onRequest(const net::TcpConnectionPtr& conn, const HttpRequest& req);
 
-  net::TcpServer server_;      ///< 底层 TCP 服务器。
-  HttpCallback httpCallback_;  ///< 用户请求处理回调。
+  net::TcpServer server_;          ///< 底层 TCP 服务器。
+  HttpCallback httpCallback_;      ///< 用户请求处理回调。
+  StreamCallback streamCallback_;  ///< 流式传输的回调
 };
 
 }  // namespace http

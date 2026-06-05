@@ -14,6 +14,8 @@ class TcpConnection;
  */
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
 
+using WeakTcpConnectionPtr = std::weak_ptr<TcpConnection>;
+
 /**
  * @brief 连接建立或断开时触发的回调。
  */

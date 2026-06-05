@@ -34,6 +34,10 @@ void HttpResponse::setBody(std::string body) {
   body_ = std::move(body);
 }
 
+void HttpResponse::setStreaming(bool on) {
+  streaming_ = on;
+}
+
 void HttpResponse::appendToBuffer(net::Buffer* out) const {
   // 状态行
   out->append("HTTP/1.1 ");
@@ -75,9 +79,14 @@ void HttpResponse::appendToBuffer(net::Buffer* out) const {
   }
 
   // 自动补充 Content-Length
-  out->append("Content-Length: " + std::to_string(body_.size()) + "\r\n");
+  // 如果streaming是true代表开启流式输出，不需要content-length
+  if (!streaming_) {
+    out->append("Content-Length: " + std::to_string(body_.size()) + "\r\n");
+  }
   out->append("Connection: " + std::string(closeConnection_ ? "close" : "keep-alive") + "\r\n");
   out->append("\r\n");  // 空行：头部结束标志
-  out->append(body_);
+  if (!streaming_) {
+    out->append(body_);
+  }
 }
 }  // namespace http
