@@ -9,7 +9,8 @@
 #include "inetaddress.hpp"
 #include "timer.hpp"
 
-using namespace net;
+using namespace transport;
+using namespace protocol;
 
 // 验证方式：
 //   普通路由：curl -v http://127.0.0.1:8080/
@@ -23,11 +24,11 @@ static const std::vector<std::string> kFakeTokens = {
     "今", "天", "天", "气", "不", "错", "，", "适", "合", "写", "代", "码", "。"
 };
 
-static void onRequest(const http::HttpRequest& req, http::HttpResponse* resp) {
+static void onRequest(const protocol::HttpRequest& req, protocol::HttpResponse* resp) {
   LOGINFO("method={} path={}", static_cast<int>(req.method()), req.path());
 
   if (req.path() == "/") {
-    resp->setStatusCode(http::k200Ok);
+    resp->setStatusCode(protocol::k200Ok);
     resp->setContentType("text/html; charset=utf-8");
     resp->setBody("<html><body>"
                   "<h1>tinynet HTTP server</h1>"
@@ -35,12 +36,12 @@ static void onRequest(const http::HttpRequest& req, http::HttpResponse* resp) {
                   "</body></html>\r\n");
 
   } else if (req.path() == "/hello") {
-    resp->setStatusCode(http::k200Ok);
+    resp->setStatusCode(protocol::k200Ok);
     resp->setContentType("text/plain; charset=utf-8");
     resp->setBody("hello, tinynet!\r\n");
 
   } else if (req.path() == "/echo") {
-    resp->setStatusCode(http::k200Ok);
+    resp->setStatusCode(protocol::k200Ok);
     resp->setContentType(req.getHeader("content-type").empty()
                              ? "application/octet-stream"
                              : req.getHeader("content-type"));
@@ -48,22 +49,22 @@ static void onRequest(const http::HttpRequest& req, http::HttpResponse* resp) {
 
   } else if (req.path() == "/stream") {
     // SSE 路由：只填响应头，body 由 StreamCallback 异步推送
-    resp->setStatusCode(http::k200Ok);
+    resp->setStatusCode(protocol::k200Ok);
     resp->setContentType("text/event-stream");
     resp->addHeader("Cache-Control", "no-cache");
     resp->setStreaming(true);
     resp->setCloseConnection(false);
 
   } else {
-    resp->setStatusCode(http::k404NotFound);
+    resp->setStatusCode(protocol::k404NotFound);
     resp->setContentType("text/plain");
     resp->setBody("404 Not Found\r\n");
   }
 }
 
 // SSE 流式回调：拿到 conn 后用定时器逐 token 推送
-static void onStream(const http::HttpRequest& req,
-                     http::HttpResponse*,
+static void onStream(const protocol::HttpRequest& req,
+                     protocol::HttpResponse*,
                      const TcpConnectionPtr& conn) {
   if (req.path() != "/stream") return;
 
@@ -85,10 +86,10 @@ static void onStream(const http::HttpRequest& req,
       return;
     }
     if (*index < tokens->size()) {
-      c->send(http::HttpServer::makeSseFrame((*tokens)[(*index)++]));
+      c->send(protocol::HttpServer::makeSseFrame((*tokens)[(*index)++]));
     } else {
       // 所有 token 推完，发终止帧并结束
-      c->send(http::HttpServer::makeSseFrame("[DONE]"));
+      c->send(protocol::HttpServer::makeSseFrame("[DONE]"));
       loop->cancel(*timerId);
       // SSE 结束后保持连接（keep-alive），等待下一个请求
     }
@@ -101,7 +102,7 @@ int main() {
   EventLoop loop;
   InetAddress listenAddr(8080, "127.0.0.1");
 
-  http::HttpServer server(&loop, listenAddr, "http-test");
+  protocol::HttpServer server(&loop, listenAddr, "http-test");
   server.setHttpCallback(onRequest);
   server.setStreamCallback(onStream);
   server.setThreadNum(2);

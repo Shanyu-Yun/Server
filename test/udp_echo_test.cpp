@@ -16,7 +16,7 @@
 #include "inetaddress.hpp"
 #include "udpserver.hpp"
 
-using namespace net;
+using namespace transport;
 
 namespace {
 constexpr uint16_t kPort = 9999;

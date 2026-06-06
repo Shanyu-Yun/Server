@@ -13,7 +13,8 @@
 #include "eventloop.hpp"
 #include "inetaddress.hpp"
 
-using namespace net;
+using namespace transport;
+using namespace protocol;
 
 // ── HTML 页面（内嵌，零外部文件依赖）──────────────────────────────────────────
 static const std::string kHtmlPage = R"html(<!DOCTYPE html>
@@ -251,34 +252,34 @@ static void callLlamaStream(const std::string& message,
 
 // ── 路由 ─────────────────────────────────────────────────────────────────────
 
-static void onRequest(const http::HttpRequest& req, http::HttpResponse* resp) {
+static void onRequest(const protocol::HttpRequest& req, protocol::HttpResponse* resp) {
   if (req.path() == "/") {
-    resp->setStatusCode(http::k200Ok);
+    resp->setStatusCode(protocol::k200Ok);
     resp->setContentType("text/html; charset=utf-8");
     resp->setBody(kHtmlPage);
 
-  } else if (req.path() == "/chat" && req.method() == http::Method::kPost) {
-    resp->setStatusCode(http::k200Ok);
+  } else if (req.path() == "/chat" && req.method() == protocol::Method::kPost) {
+    resp->setStatusCode(protocol::k200Ok);
     resp->setContentType("text/event-stream");
     resp->addHeader("Cache-Control", "no-cache");
     resp->setStreaming(true);
     resp->setCloseConnection(false);
 
   } else {
-    resp->setStatusCode(http::k404NotFound);
+    resp->setStatusCode(protocol::k404NotFound);
     resp->setContentType("text/plain");
     resp->setBody("404 Not Found\r\n");
   }
 }
 
-static void onStream(const http::HttpRequest& req,
-                     http::HttpResponse*,
+static void onStream(const protocol::HttpRequest& req,
+                     protocol::HttpResponse*,
                      const TcpConnectionPtr& conn) {
   if (req.path() != "/chat") return;
 
   std::string message = extractJsonString(req.body(), "message");
   if (message.empty()) {
-    conn->send(http::HttpServer::makeSseFrame("[DONE]"));
+    conn->send(protocol::HttpServer::makeSseFrame("[DONE]"));
     return;
   }
 
@@ -289,11 +290,11 @@ static void onStream(const http::HttpRequest& req,
     callLlamaStream(message, [&weakConn](const std::string& token) -> bool {
       auto c = weakConn.lock();
       if (!c) return false;  // 浏览器已断开，停止推理
-      c->send(http::HttpServer::makeSseFrame(token));
+      c->send(protocol::HttpServer::makeSseFrame(token));
       return true;
     });
     if (auto c = weakConn.lock()) {
-      c->send(http::HttpServer::makeSseFrame("[DONE]"));
+      c->send(protocol::HttpServer::makeSseFrame("[DONE]"));
     }
   }).detach();
 }
@@ -304,7 +305,7 @@ int main() {
   EventLoop loop;
   InetAddress listenAddr(8080, "127.0.0.1");
 
-  http::HttpServer server(&loop, listenAddr, "llm-chat");
+  protocol::HttpServer server(&loop, listenAddr, "llm-chat");
   server.setHttpCallback(onRequest);
   server.setStreamCallback(onStream);
   server.setThreadNum(2);

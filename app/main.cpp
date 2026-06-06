@@ -6,16 +6,16 @@
 #include "eventloop.hpp"
 #include "inetaddress.hpp"
 #include "tcpserver.hpp"
-using namespace net;
+using namespace transport;
 
 int main() {
   std::string msg = "shaSQ";
-  std::array<uint8_t, 20> res = sha1(msg);
+  std::array<uint8_t, 20> res = transport::sha1(msg);
 
   for (auto b : res)
     printf("%02x", b);
   std::cout << std::endl;
 
-  auto i = base64Encode(res);
+  auto i = transport::base64Encode(res);
   std::cout << i.size() << std::endl;
 }

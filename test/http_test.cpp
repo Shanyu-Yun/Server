@@ -4,7 +4,7 @@
 
 #include "httprequest.hpp"
 int main() {
-  http::HttpRequest req;
+  protocol::HttpRequest req;
   req.setMethod("GET", "GET" + 3);  // → kGet
   // start/colon/end 必须在同一段内存里
   const char* line = "Host: example.com";
