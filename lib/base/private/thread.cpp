@@ -1,0 +1,41 @@
+#include "thread.hpp"
+
+#include "currentthread.hpp"
+#include "logger.hpp"
+
+namespace net {
+
+Thread::Thread(ThreadFunc func, const std::string& name)
+    : started_(false),
+      joined_(false),
+      thread_(nullptr),
+      tid_(0),
+      func_(std::move(func)),
+      name_(name) {
+  numCreated_.fetch_add(1);
+}
+
+Thread::~Thread() {
+  if (started_ && !joined_) {
+    thread_->detach();
+  }
+}
+
+void Thread::start() {
+  started_ = true;
+  thread_ = std::make_shared<std::thread>([this]() {
+    tid_ = CurrentThread::tid();
+    func_();
+  });
+}
+
+void Thread::join() {
+  if (started_ && !joined_) {
+    thread_->join();
+    joined_ = true;
+  } else {
+    LOGERROR("Thread::join() called on thread that is not started or already joined");
+  }
+}
+
+}  // namespace net

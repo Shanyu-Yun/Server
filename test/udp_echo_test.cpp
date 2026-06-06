@@ -11,10 +11,10 @@
 #include <string>
 #include <thread>
 
-#include "base/logger.hpp"
-#include "net/eventloop.hpp"
-#include "net/inetaddress.hpp"
-#include "net/udpserver.hpp"
+#include "logger.hpp"
+#include "eventloop.hpp"
+#include "inetaddress.hpp"
+#include "udpserver.hpp"
 
 using namespace net;
 

@@ -6,12 +6,12 @@
 #include <string>
 #include <thread>
 
-#include "base/logger.hpp"
-#include "http/httprequest.hpp"
-#include "http/httpresponse.hpp"
-#include "http/httpserver.hpp"
-#include "net/eventloop.hpp"
-#include "net/inetaddress.hpp"
+#include "logger.hpp"
+#include "httprequest.hpp"
+#include "httpresponse.hpp"
+#include "httpserver.hpp"
+#include "eventloop.hpp"
+#include "inetaddress.hpp"
 
 using namespace net;
 

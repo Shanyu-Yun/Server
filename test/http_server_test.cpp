@@ -1,13 +1,13 @@
 #include <memory>
 #include <vector>
 
-#include "base/logger.hpp"
-#include "http/httprequest.hpp"
-#include "http/httpresponse.hpp"
-#include "http/httpserver.hpp"
-#include "net/eventloop.hpp"
-#include "net/inetaddress.hpp"
-#include "net/timer.hpp"
+#include "logger.hpp"
+#include "httprequest.hpp"
+#include "httpresponse.hpp"
+#include "httpserver.hpp"
+#include "eventloop.hpp"
+#include "inetaddress.hpp"
+#include "timer.hpp"
 
 using namespace net;
 

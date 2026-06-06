@@ -1,34 +1,21 @@
-#include "base/logger.hpp"
-#include "net/eventloop.hpp"
-#include "net/inetaddress.hpp"
-#include "net/tcpserver.hpp"
+#include <iostream>
 
+#include "base64.hpp"
+#include "logger.hpp"
+#include "sha1.hpp"
+#include "eventloop.hpp"
+#include "inetaddress.hpp"
+#include "tcpserver.hpp"
 using namespace net;
 
 int main() {
-  EventLoop loop;
-  InetAddress listenAddr(8888, "127.0.0.1");
+  std::string msg = "shaSQ";
+  std::array<uint8_t, 20> res = sha1(msg);
 
-  TcpServer server(&loop, listenAddr, "echo-server", kReusePort);
-  server.setThreadNum(4);
+  for (auto b : res)
+    printf("%02x", b);
+  std::cout << std::endl;
 
-  server.setConnectionCallback([](const TcpConnectionPtr& conn) {
-    if (conn->isConnected()) {
-      LOGINFO("[{}] connected from {}", conn->getName(), conn->getPeerAddr().toIpPort());
-      conn->send("hello from echo-server\n");
-    } else {
-      LOGINFO("[{}] disconnected", conn->getName());
-    }
-  });
-
-  server.setMessageCallback([](const TcpConnectionPtr& conn, Buffer* buf, Timestamp) {
-    const std::string msg = buf->retrieveAsString(buf->readableBytes());
-    LOGINFO("[{}] received {} bytes: {}", conn->getName(), msg.size(), msg);
-    conn->send(msg);
-  });
-
-  server.start();
-  LOGINFO("echo-server listening on {}", listenAddr.toIpPort());
-  loop.loop();
-  return 0;
+  auto i = base64Encode(res);
+  std::cout << i.size() << std::endl;
 }
